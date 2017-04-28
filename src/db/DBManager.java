@@ -5,11 +5,7 @@
  */
 package db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.Properties;
 
@@ -137,6 +133,22 @@ public class DBManager {
         }
         return results;
     }
+
+    public LinkedList<String> getCategories(){
+        PreparedStatement stmt = null;
+        LinkedList<String> categoriesList = new LinkedList<>();
+        String query = "Select categoryName From Categories";
+        try {
+            stmt = connection.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()){
+                categoriesList.add(rs.getString(1));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return categoriesList;
+            }
 
     private int getResultSetSize(ResultSet rs) {
         int count = 0;
