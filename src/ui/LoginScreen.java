@@ -116,9 +116,9 @@ public class LoginScreen extends javax.swing.JFrame {
             if (!result) {
                 JOptionPane.showMessageDialog(this, "Invalid User ID", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                UserView userView = new UserView(DB, employeeID);
-                userView.setVisible(true);
-                this.setVisible(false);
+//                UserView userView = new UserView(DB, employeeID);
+//                userView.setVisible(true);
+//                this.setVisible(false);
             }
         } else {
             boolean result=DB.checkModerator(employeeID);
