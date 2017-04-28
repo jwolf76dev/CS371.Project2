@@ -5,6 +5,11 @@
  */
 package ui;
 
+import db.DBManager;
+import java.util.LinkedList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author jwolf
@@ -12,10 +17,21 @@ package ui;
 public class UserView extends javax.swing.JFrame {
 
     /**
-     * Creates new form UserApplication
+     * Creates new form UserView
      */
-    public UserView() {
+    DBManager DB;
+    String userID;
+    String[] allAdsColumns
+            = new String[]{"Title", "Description", "Price", "Date"};
+    String[] userAdsColumns
+            = new String[]{"Ad ID", "Title", "Description", "Price", "Date", "Status"};
+
+    public UserView(DBManager DB, String userID) {
+        this.setTitle("User: " + userID);
+        this.DB = DB;
+        this.userID = userID;
         initComponents();
+//        this.populateAllAdsTable();
     }
 
     /**
@@ -232,43 +248,24 @@ public class UserView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+//    private void populateCategories() {
+//        LinkedList<Record> categories=DB.getCategories();
+//        this.User_Category_ComboBox.removeAllItems();
+//        for(Record category:category) {
+//            this.User_Category_ComboBox.addItem(category);
+//        }
+//    }
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UserView().setVisible(true);
-            }
-        });
-    }
+//    public void populateAllAdsTable() {
+//        Object[][] allAds = DB.getAdsByStatus("ACTIVE");
+//        this.getAdsByStatus.setModel(new DefaultTableModel(allAds, allAdsColumns));
+//        User_Period_ComboBox.
+//    }
+    
+//    public void populateUserViewTable() {
+//        Object[][] userAds = DB.getAdvertisementsByUser();
+//        this.advertisementsTable.setModel(new DefaultTableModel(userAds, userAdsColumns));
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton User_AddAd_Button;

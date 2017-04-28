@@ -15,7 +15,7 @@ import java.util.Properties;
 
 /**
  *
- * @author jwolf
+ * @author jwolf, lsimmons
  */
 public class DBManager {
 
@@ -72,8 +72,8 @@ public class DBManager {
         String query = "select * FROM Moderators WHERE userID=?";
         return checkEmployee(query, employeeID);
     }
-    
-    public boolean checkEmployee(String query, String employeeID) {
+
+    private boolean checkEmployee(String query, String employeeID) {
         PreparedStatement stmt = null;
 
         try {
@@ -89,6 +89,53 @@ public class DBManager {
             return false;
         }
         return false;
+    }
+    
+    public Object[][] getAdsByUser(String userID) {
+        String query = "SELECT advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
+                + "FROM Advertisements "
+                + "INNER JOIN Statuses ON Statuses.statusID = Advertisements.statusID "
+                + "WHERE userID = ?";
+        return getAdvertisement(query, userID);
+    }
+
+//    public Object[][] getAdsByModerator(String moderatorID) {
+//        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
+//                + "FROM Advertisements "
+//                + "INNER JOIN "
+//        return getAdvertisement(query, moderatorID);
+//    }
+//    
+//    public Object[][] getAdsByStatus(String status) {
+//        String query = "SELECT advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
+//                + "FROM Advertisements "
+//                + "INNER JOIN Statuses ON Statuses.statusID = Advertisements.statusID "
+//                + "WHERE statusID = ?";
+//        return getAdvertisement(query, category, period, status);
+//    }
+
+    private Object[][] getAdvertisement(String query, String userID) {
+        PreparedStatement stmt = null;
+        Object[][] results = null;
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            int index = 0;
+            results = new Object[getResultSetSize(rs)][6];
+            while (rs.next()) {
+                results[index][0] = rs.getInt("advertisementID");
+                results[index][1] = rs.getString("advertisementTitle");
+                results[index][2] = rs.getString("advertisementDetails");
+                results[index][3] = rs.getDouble("price");
+                results[index][4] = rs.getString("statusName");
+                results[index][5] = rs.getDate("advertisementDateTime");
+                index++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
     }
 
     private int getResultSetSize(ResultSet rs) {

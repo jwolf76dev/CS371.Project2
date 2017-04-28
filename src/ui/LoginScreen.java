@@ -109,23 +109,23 @@ public class LoginScreen extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void Login_Login_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_Login_ButtonActionPerformed
-        String employeeID=this.Login_Username_Field.getText();
+        String userID=this.Login_Username_Field.getText();
         String userType=(String)Login_UserType_ComboBox.getSelectedItem().toString();
         if(userType == "User"){
-            boolean result=DB.checkUser(employeeID);
+            boolean result=DB.checkUser(userID);
             if (!result) {
                 JOptionPane.showMessageDialog(this, "Invalid User ID", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                UserView userView = new UserView(DB, employeeID);
+                UserView userView = new UserView(DB, userID);
                 userView.setVisible(true);
                 this.setVisible(false);
             }
         } else {
-            boolean result=DB.checkModerator(employeeID);
+            boolean result=DB.checkModerator(userID);
             if (!result) {
                 JOptionPane.showMessageDialog(this, "Invalid Moderator ID", "Error", JOptionPane.ERROR_MESSAGE);
             } //else {
-//                ModeratorView moderatorView = new ModeratorView(DB, employeeID);
+//                ModeratorView moderatorView = new ModeratorView(DB, userID);
 //                moderatorView.setVisible(true);
 //                this.setVisible(false);
 //            }
