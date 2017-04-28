@@ -6,6 +6,7 @@
 package ui;
 
 import db.DBManager;
+import db.Record;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -32,8 +33,17 @@ public class UserView extends javax.swing.JFrame {
         this.userID = userID;
         initComponents();
 //        this.populateAllAdsTable();
+        populateCategories();
     }
 
+    private void populateCategories() {
+        LinkedList<Record> categories=DB.getCategories();
+        this.User_Category_ComboBox.removeAllItems();
+        this.User_Category_ComboBox.addItem(new Record("All","All"));
+        for(Record category:categories) {
+            this.User_Category_ComboBox.addItem(category);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -272,7 +282,7 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JScrollPane User_AllAdsResults_Container;
     private javax.swing.JTable User_AllAdsResults_Table;
     private javax.swing.JPanel User_AllAds_Tab;
-    private javax.swing.JComboBox<String> User_Category_ComboBox;
+    private javax.swing.JComboBox<Record> User_Category_ComboBox;
     private javax.swing.JLabel User_Category_Label;
     private javax.swing.JButton User_Delete_Button;
     private javax.swing.JButton User_Edit_Button;

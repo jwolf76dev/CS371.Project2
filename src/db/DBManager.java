@@ -17,22 +17,7 @@ public class DBManager {
 
     Connection connection;
 
-    public class Record {
-
-        public String ID;
-        public String Name;
-
-        public Record(String ID, String Name) {
-            this.ID = ID;
-            this.Name = Name;
-        }
-
-        public String toString() {
-            return Name;
-        }
-    }
-
-    public void connect(String userName, String password, String serverName,
+   public void connect(String userName, String password, String serverName,
             String portNumber, String dbName)
             throws SQLException, InstantiationException, IllegalAccessException {
         System.out.println("Loading driver...");
@@ -86,7 +71,7 @@ public class DBManager {
         }
         return false;
     }
-    
+
     public Object[][] getAdsByUser(String userID) {
         String query = "SELECT advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
                 + "FROM Advertisements "
@@ -109,7 +94,6 @@ public class DBManager {
 //                + "WHERE statusID = ?";
 //        return getAdvertisement(query, category, period, status);
 //    }
-
     private Object[][] getAdvertisement(String query, String userID) {
         PreparedStatement stmt = null;
         Object[][] results = null;
@@ -134,21 +118,21 @@ public class DBManager {
         return results;
     }
 
-    public LinkedList<String> getCategories(){
+    public LinkedList<Record> getCategories() {
         PreparedStatement stmt = null;
-        LinkedList<String> categoriesList = new LinkedList<>();
-        String query = "Select categoryName From Categories";
+        LinkedList<Record> categoriesList = new LinkedList<>();
+        String query = "Select * From Categories";
         try {
             stmt = connection.prepareStatement(query);
             ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()){
-                categoriesList.add(rs.getString(1));
+            while (rs.next()) {
+                categoriesList.add(new Record(rs.getString("categoryID"), rs.getString("categoryName")));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return categoriesList;
-            }
+    }
 
     private int getResultSetSize(ResultSet rs) {
         int count = 0;
