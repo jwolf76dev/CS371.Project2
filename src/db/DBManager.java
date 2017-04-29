@@ -122,7 +122,7 @@ public class DBManager {
         Object[][] results = new Object[][]{};
         
         String query = "SELECT A.advertisementTitle, A.advertisementDetails, "
-                + "A.price, DATE(A.advertisementDateTime)"
+                + "A.price, DATE(A.advertisementDateTime) advertisementDate "
                 + "FROM Advertisements A "
                 + "INNER JOIN Statuses S ON S.statusID=A.statusID "
                 + "WHERE statusName = 'ACTIVE'";
@@ -146,10 +146,10 @@ public class DBManager {
             String title = rs.getString("advertisementTitle");
             String details = rs.getString("advertisementDetails");
             String price = rs.getString("price");
-            String date = rs.getDate("advertisementDateTime").toString();
+            String date = rs.getString("advertisementDate");
             
             Advertisement advertisement = new Advertisement(title, details, price, date);
-            result[index++]=advertisement.toArray();
+            result[index++]=advertisement.activeAdsToArray();
         }
         while(rs.next());
         return result;

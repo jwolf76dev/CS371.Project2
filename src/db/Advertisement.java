@@ -102,7 +102,11 @@ public class Advertisement {
         this.moderatorID = moderatorID;
     }
 
-    Object[] toArray(){
+    Object[] activeAdsToArray(){
+        return new Object[]{title, details, price, date};
+    }
+
+    Object[] allAdsToArray(){
         return new Object[]{ID, userID, date, title, details, price, statusID, moderatorID};
     }
 }
