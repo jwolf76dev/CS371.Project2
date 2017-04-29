@@ -110,7 +110,7 @@ public class LoginScreen extends javax.swing.JFrame {
 
     private void Login_Login_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_Login_ButtonActionPerformed
         String userID=this.Login_Username_Field.getText();
-        String userType=(String)Login_UserType_ComboBox.getSelectedItem().toString();
+        String userType=(String)this.Login_UserType_ComboBox.getSelectedItem().toString();
         if(userType == "User"){
             boolean result=DB.checkUser(userID);
             if (!result) {

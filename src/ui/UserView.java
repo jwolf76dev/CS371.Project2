@@ -24,8 +24,8 @@ public class UserView extends javax.swing.JFrame {
     String userID;
     String[] allAdsColumns
             = new String[]{"Title", "Description", "Price", "Date"};
-    String[] userAdsColumns
-            = new String[]{"Ad ID", "Title", "Description", "Price", "Date", "Status"};
+    String[] myAdsColumns
+            = new String[]{"Ad ID", "Title", "Description", "Price", "Status", "Date"};
 
     public UserView(DBManager DB, String userID) {
         this.setTitle("User: " + userID);
@@ -34,8 +34,9 @@ public class UserView extends javax.swing.JFrame {
         initComponents();
         this.populateCategories();
         this.populateAllAdsTable();
+        this.populateUserAdsTable(userID);
     }
-        
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -74,6 +75,11 @@ public class UserView extends javax.swing.JFrame {
 
         User_AllAds_Tab.setToolTipText("");
         User_AllAds_Tab.setName(""); // NOI18N
+        User_AllAds_Tab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                User_AllAds_TabMouseClicked(evt);
+            }
+        });
 
         User_Category_ComboBox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Category_ComboBox.setToolTipText("Select an item category to search.");
@@ -82,13 +88,18 @@ public class UserView extends javax.swing.JFrame {
         User_Category_Label.setText("Category");
 
         User_SearchString_Field.setToolTipText("Enter keyword(s) to search for.");
+        User_SearchString_Field.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                User_SearchString_FieldKeyReleased(evt);
+            }
+        });
 
         User_Search_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Search_Button.setText("Search");
         User_Search_Button.setToolTipText("");
 
         User_Period_ComboBox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        User_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "This Month", "Last Month", "Last 3 Months", "Last 6 Months", "Last Year", "Any Date" }));
+        User_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Date", "This Month", "Last Month", "Last 3 Months", "Last 6 Months", "Last Year" }));
         User_Period_ComboBox.setToolTipText("Select a timeframe to search within.");
 
         User_SearchString_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -104,7 +115,15 @@ public class UserView extends javax.swing.JFrame {
             new String [] {
                 "Title", "Description", "Price", "Date"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         User_AllAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         User_AllAdsResults_Container.setViewportView(User_AllAdsResults_Table);
 
@@ -157,6 +176,12 @@ public class UserView extends javax.swing.JFrame {
 
         User_Tab_Container.addTab("All Advertisements", null, User_AllAds_Tab, "View all available advertisements.");
 
+        User_MyAds_Tab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                User_MyAds_TabMouseClicked(evt);
+            }
+        });
+
         User_Delete_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Delete_Button.setText("Delete");
         User_Delete_Button.setToolTipText("Delete the currently highlighted row.");
@@ -181,9 +206,8 @@ public class UserView extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        User_MyAdsResults_Table.setColumnSelectionAllowed(true);
+        User_MyAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         User_MyAdsResults_Container.setViewportView(User_MyAdsResults_Table);
-        User_MyAdsResults_Table.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout User_MyAds_TabLayout = new javax.swing.GroupLayout(User_MyAds_Tab);
         User_MyAds_Tab.setLayout(User_MyAds_TabLayout);
@@ -242,18 +266,37 @@ public class UserView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void User_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_User_SearchString_FieldKeyReleased
+//        Record category = (Record) this.User_Category_ComboBox.getSelectedItem();
+//        String period = this.User_Category_ComboBox.getSelectedItem().toString();
+//        Object[][] searchResults = DB.searchActiveAds(category.getID(), period, this.User_SearchString_Field.getText());
+//        this.User_AllAdsResults_Table.setModel(new DefaultTableModel(searchResults, allAdsColumns));
+    }//GEN-LAST:event_User_SearchString_FieldKeyReleased
+
+    private void User_AllAds_TabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_User_AllAds_TabMouseClicked
+        populateAllAdsTable();
+    }//GEN-LAST:event_User_AllAds_TabMouseClicked
+
+    private void User_MyAds_TabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_User_MyAds_TabMouseClicked
+        populateUserAdsTable(userID);
+    }//GEN-LAST:event_User_MyAds_TabMouseClicked
+
     private void populateCategories() {
-        LinkedList<Record> categories=DB.getCategories();
         this.User_Category_ComboBox.removeAllItems();
-        this.User_Category_ComboBox.addItem(new Record("All","All"));
-        for(Record category:categories) {
+        this.User_Category_ComboBox.addItem(new Record("All", "All"));
+        for (Record category : DB.getCategories()) {
             this.User_Category_ComboBox.addItem(category);
         }
     }
-    
+
     public void populateAllAdsTable() {
         Object[][] User_allAds = DB.getAllActiveAds();
         this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
+    }
+    
+    public void populateUserAdsTable(String userID) {
+        Object[][] User_myAds = DB.getAllUsersAds(userID);
+        this.User_MyAdsResults_Table.setModel(new DefaultTableModel(User_myAds, myAdsColumns));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
