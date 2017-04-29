@@ -17,7 +17,7 @@ public class DBManager {
 
     Connection connection;
 
-   public void connect(String userName, String password, String serverName,
+    public void connect(String userName, String password, String serverName,
             String portNumber, String dbName)
             throws SQLException, InstantiationException, IllegalAccessException {
         System.out.println("Loading driver...");
@@ -71,53 +71,7 @@ public class DBManager {
         }
         return false;
     }
-
-    public Object[][] getAdsByUser(String userID) {
-        String query = "SELECT advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
-                + "FROM Advertisements "
-                + "INNER JOIN Statuses ON Statuses.statusID = Advertisements.statusID "
-                + "WHERE userID = ?";
-        return getAdvertisement(query, userID);
-    }
-
-//    public Object[][] getAdsByModerator(String moderatorID) {
-//        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
-//                + "FROM Advertisements "
-//                + "INNER JOIN "
-//        return getAdvertisement(query, moderatorID);
-//    }
-//    
-//    public Object[][] getAdsByStatus(String status) {
-//        String query = "SELECT advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
-//                + "FROM Advertisements "
-//                + "INNER JOIN Statuses ON Statuses.statusID = Advertisements.statusID "
-//                + "WHERE statusID = ?";
-//        return getAdvertisement(query, category, period, status);
-//    }
-    private Object[][] getAdvertisement(String query, String userID) {
-        PreparedStatement stmt = null;
-        Object[][] results = null;
-        try {
-            stmt = connection.prepareStatement(query);
-            stmt.setString(1, userID);
-            ResultSet rs = stmt.executeQuery();
-            int index = 0;
-            results = new Object[getResultSetSize(rs)][6];
-            while (rs.next()) {
-                results[index][0] = rs.getInt("advertisementID");
-                results[index][1] = rs.getString("advertisementTitle");
-                results[index][2] = rs.getString("advertisementDetails");
-                results[index][3] = rs.getDouble("price");
-                results[index][4] = rs.getString("statusName");
-                results[index][5] = rs.getDate("advertisementDateTime");
-                index++;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return results;
-    }
-
+    
     public LinkedList<Record> getCategories() {
         PreparedStatement stmt = null;
         LinkedList<Record> categoriesList = new LinkedList<>();
@@ -133,6 +87,121 @@ public class DBManager {
         }
         return categoriesList;
     }
+
+//    public Object[][] getAllActiveAds() {
+//        PreparedStatement stmt = null;
+//        Object[][] results = new Object[][]{};
+//        
+//        String query = "SELECT A.advertisementDateTime, A.advertisementTitle, "
+//                + "A.advertisementDetails, A.price"
+//                + "FROM Advertisements A "
+//                + "INNER JOIN Statuses S ON S.statusID=A.statusID "
+//                + "WHERE statusName = 'ACTIVE'";
+//        
+//        try {
+//            stmt = connection.prepareStatement(query);
+//            ResultSet rs = stmt.executeQuery();
+//            int count = getResultSetSize(rs);
+//            int index = 0;
+//            Object[][] result = new Object[count][4];
+//            while (rs.next()) {
+//                result[index][0] = rs.getString("advertisementTitle");
+//                result[index][1] = rs.getString("advertisementDetails");
+//                result[index][2] = rs.getDouble("price");
+//                result[index][3] = rs.getDate("advertisementDateTime");
+//                index++;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return results;
+//    }
+
+    public Object[][] getAllActiveAds() {
+        PreparedStatement stmt = null;
+        Object[][] results = new Object[][]{};
+        
+        String query = "SELECT A.advertisementTitle, A.advertisementDetails, "
+                + "A.price, DATE(A.advertisementDateTime)"
+                + "FROM Advertisements A "
+                + "INNER JOIN Statuses S ON S.statusID=A.statusID "
+                + "WHERE statusName = 'ACTIVE'";
+        
+        try {
+            stmt = connection.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            int count = getResultSetSize(rs);
+            results = getActiveAds(count, rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return results;
+        }
+        return results;
+    }
+    
+    private Object[][] getActiveAds(int count, ResultSet rs) throws SQLException {
+        Object[][] result = new Object[count][4];
+        int index = 0;
+        do {
+            String title = rs.getString("advertisementTitle");
+            String details = rs.getString("advertisementDetails");
+            String price = rs.getString("price");
+            String date = rs.getDate("advertisementDateTime").toString();
+            
+            Advertisement advertisement = new Advertisement(title, details, price, date);
+            result[index++]=advertisement.toArray();
+        }
+        while(rs.next());
+        return result;
+    }
+
+//public Object[][] getAdsByStatus(String status) {
+//        String query = "SELECT advertisementID, advertisementDateTime, "
+//                + "advertisementTitle, advertisementDetails, price, Statuses.statusName, "
+//                + "FROM Advertisements "
+//                + "INNER JOIN Statuses ON Statuses.statusID=Advertisements.statusID "
+//                + "WHERE statusID = ?";
+//        return getAdvertisementByStatus(query, status);
+//    }
+
+//    public Object[][] getAdsByUser(String userID) {
+//        String query = "SELECT advertisementDateTime, advertisementTitle, advertisementDetails, price "
+//                + "FROM Advertisements "
+//                + "INNER JOIN Statuses ON Statuses.statusID = Advertisements.statusID "
+//                + "WHERE userID = ?";
+//        return getAdvertisementByUser(query, userID);
+//    }
+
+//    public Object[][] getAdsByModerator(String moderatorID) {
+//        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
+//                + "FROM Advertisements "
+//                + "INNER JOIN "
+//      return getAdvertisementByUser(query, userID);
+//    }
+//
+//    private Object[][] getAdvertisementByUser(String query, String userID) {
+//        PreparedStatement stmt = null;
+//        Object[][] results = null;
+//        try {
+//            stmt = connection.prepareStatement(query);
+//            stmt.setString(1, userID);
+//            ResultSet rs = stmt.executeQuery();
+//            int index = 0;
+//            results = new Object[getResultSetSize(rs)][6];
+//            while (rs.next()) {
+//                results[index][0] = rs.getInt("advertisementID");
+//                results[index][1] = rs.getDate("advertisementDateTime");
+//                results[index][2] = rs.getString("advertisementTitle");
+//                results[index][3] = rs.getString("advertisementDetails");
+//                results[index][4] = rs.getDouble("price");
+//                results[index][5] = rs.getString("statusName");
+//                index++;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return results;
+//    }
 
     private int getResultSetSize(ResultSet rs) {
         int count = 0;

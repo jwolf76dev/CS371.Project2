@@ -10,32 +10,39 @@ package db;
  * @author jwolf
  */
 public class Advertisement {
-    private int ID;
+    private String ID;
     private String userID;
-    private String moderatorID;
-    private String statusID;
+    private String date;
     private String title;
     private String details;
-    private String date;
     private String price;
+    private String statusID;
+    private String moderatorID;
     
-    public Advertisement(int ID, String userID, String moderatorID, String statusID,
-            String title, String details, String date, String price) {
-        this.ID=ID;
-        this.userID=userID;
-        this.moderatorID=moderatorID;
-        this.statusID=statusID;
+    public Advertisement(String title, String details, String price, String date) {
         this.title=title;
         this.details=details;
-        this.date=date;
         this.price=price;
+        this.date=date;
+    }
+    
+    public Advertisement(String ID, String userID, String date, String title,
+            String details, String price, String statusID, String moderatorID) {
+        this.ID=ID;
+        this.userID=userID;
+        this.date=date;
+        this.title=title;
+        this.details=details;
+        this.price=price;
+        this.statusID=statusID;
+        this.moderatorID=moderatorID;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 
@@ -47,20 +54,12 @@ public class Advertisement {
         this.userID = userID;
     }
 
-    public String getModeratorID() {
-        return moderatorID;
+    public String getDate() {
+        return date;
     }
 
-    public void setModeratorID(String moderatorID) {
-        this.moderatorID = moderatorID;
-    }
-
-    public String getStatusID() {
-        return statusID;
-    }
-
-    public void setStatusID(String statusID) {
-        this.statusID = statusID;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getTitle() {
@@ -79,14 +78,6 @@ public class Advertisement {
         this.details = details;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getPrice() {
         return price;
     }
@@ -94,8 +85,24 @@ public class Advertisement {
     public void setPrice(String price) {
         this.price = price;
     }
-    
+
+    public String getStatusID() {
+        return statusID;
+    }
+
+    public void setStatusID(String statusID) {
+        this.statusID = statusID;
+    }
+
+    public String getModeratorID() {
+        return moderatorID;
+    }
+
+    public void setModeratorID(String moderatorID) {
+        this.moderatorID = moderatorID;
+    }
+
     Object[] toArray(){
-        return new Object[]{ID, userID, moderatorID, statusID, title, details, date, price};
+        return new Object[]{ID, userID, date, title, details, price, statusID, moderatorID};
     }
 }

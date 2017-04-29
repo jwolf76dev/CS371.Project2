@@ -32,18 +32,10 @@ public class UserView extends javax.swing.JFrame {
         this.DB = DB;
         this.userID = userID;
         initComponents();
-//        this.populateAllAdsTable();
-        populateCategories();
+        this.populateCategories();
+        this.populateAllAdsTable();
     }
-
-    private void populateCategories() {
-        LinkedList<Record> categories=DB.getCategories();
-        this.User_Category_ComboBox.removeAllItems();
-        this.User_Category_ComboBox.addItem(new Record("All","All"));
-        for(Record category:categories) {
-            this.User_Category_ComboBox.addItem(category);
-        }
-    }
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -112,15 +104,7 @@ public class UserView extends javax.swing.JFrame {
             new String [] {
                 "Title", "Description", "Price", "Date"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         User_AllAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         User_AllAdsResults_Container.setViewportView(User_AllAdsResults_Table);
 
@@ -258,24 +242,19 @@ public class UserView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-//    private void populateCategories() {
-//        LinkedList<Record> categories=DB.getCategories();
-//        this.User_Category_ComboBox.removeAllItems();
-//        for(Record category:category) {
-//            this.User_Category_ComboBox.addItem(category);
-//        }
-//    }
-
-//    public void populateAllAdsTable() {
-//        Object[][] allAds = DB.getAdsByStatus("ACTIVE");
-//        this.getAdsByStatus.setModel(new DefaultTableModel(allAds, allAdsColumns));
-//        User_Period_ComboBox.
-//    }
+    private void populateCategories() {
+        LinkedList<Record> categories=DB.getCategories();
+        this.User_Category_ComboBox.removeAllItems();
+        this.User_Category_ComboBox.addItem(new Record("All","All"));
+        for(Record category:categories) {
+            this.User_Category_ComboBox.addItem(category);
+        }
+    }
     
-//    public void populateUserViewTable() {
-//        Object[][] userAds = DB.getAdvertisementsByUser();
-//        this.advertisementsTable.setModel(new DefaultTableModel(userAds, userAdsColumns));
-//    }
+    public void populateAllAdsTable() {
+        Object[][] User_allAds = DB.getAllActiveAds();
+        this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton User_AddAd_Button;
