@@ -9,18 +9,25 @@ package db;
  *
  * @author jwolf
  */
- public class Record {
+public class Record {
 
-        public String ID;
-        public String Name;
+    public String ID;
+    public String Name;
 
-        public Record(String ID, String Name) {
-            this.ID = ID;
-            this.Name = Name;
-        }
-
-        @Override
-        public String toString() {
-            return Name;
-        }
+    public Record(String ID, String Name) {
+        this.ID = ID;
+        this.Name = Name;
     }
+    
+    public String toString() {
+        return Name;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public String getName() {
+        return Name;
+    }
+}

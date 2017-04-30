@@ -26,6 +26,16 @@ public class Advertisement {
         this.date=date;
     }
     
+    public Advertisement (String ID, String title, String details, String price,
+            String statusID, String date) {
+        this.ID=ID;
+        this.title=title;
+        this.details=details;
+        this.price=price;
+        this.statusID=statusID;
+        this.date=date;
+    }
+
     public Advertisement(String ID, String userID, String date, String title,
             String details, String price, String statusID, String moderatorID) {
         this.ID=ID;
@@ -105,7 +115,11 @@ public class Advertisement {
     Object[] activeAdsToArray(){
         return new Object[]{title, details, price, date};
     }
-
+    
+    Object[] userAdsToArray() {
+        return new Object[]{ID, title, details, price, statusID, date};
+    }
+            
     Object[] allAdsToArray(){
         return new Object[]{ID, userID, date, title, details, price, statusID, moderatorID};
     }
