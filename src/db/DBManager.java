@@ -193,7 +193,8 @@ public class DBManager {
         return result;
     }
 
-    public boolean addAdvertisement(String title, String details, String price, String category, String userID) {
+    public boolean addAdvertisement(String title, String details, String price, String category,
+            String userID) {
         PreparedStatement stmt = null;
 
         String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, "
@@ -218,7 +219,8 @@ public class DBManager {
         }
     }
     
-    public boolean updateAdvertisement(String ID, String title, String details, String price, String category) {
+    public boolean userUpdateAdvertisement(String ID, String title, String details, String price, 
+            String category) {
         PreparedStatement stmt = null;
 
         String query = "UPDATE Advertisements "
@@ -245,6 +247,28 @@ public class DBManager {
         }
     }
 
+public boolean moderatorUpdateAdvertisement(String ID, String category, String status) {
+        PreparedStatement stmt = null;
+
+        String query = "UPDATE Advertisements "
+                + "SET categoryID= ?, statusID= ?) "
+                + "WHERE advertisementID= ? "
+                + "VALUES (?,?,?)";
+
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, category);
+            stmt.setString(2, "PN");
+            stmt.setString(3, ID);
+            stmt.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+        
     public Object[][] getAllUnclaimedAds() {
         PreparedStatement stmt = null;
         Object[][] results = new Object[][]{};
@@ -278,7 +302,8 @@ public class DBManager {
             String user = rs.getString("userID");
             String date = rs.getString("advertisementDate");
 
-            Advertisement advertisement = new Advertisement(id, title, details, price, category, user, date);
+            Advertisement advertisement = new Advertisement(id, title, details, price, 
+                    category, user, date);
             result[index++] = advertisement.unclaimedAdsToArray();
         } while (rs.next());
         return result;
@@ -320,7 +345,8 @@ public class DBManager {
             String status = rs.getString("statusID");
             String date = rs.getString("advertisementDate");
 
-            Advertisement advertisement = new Advertisement(id, title, details, price, category, user, status, date);
+            Advertisement advertisement = new Advertisement(id, title, details, price, 
+                    category, user, status, date);
             result[index++] = advertisement.moderatorAdsToArray();
         } while (rs.next());
         return result;
@@ -334,7 +360,8 @@ public class DBManager {
         boolean hasPeriod = month != -1;
         boolean hasSearchText = !StringUtils.isNullOrEmpty(searchText);
         String[] searchArray = searchText.split(" ");
-        String query = "Select advertisementTitle, advertisementDetails, price , Date(advertisementDateTime) as advertisementDate "
+        String query = "Select advertisementTitle, advertisementDetails, price, "
+                + "Date(advertisementDateTime) as advertisementDate "
                 + "From Advertisements "
                 + "Where statusID = 'AC'";
         try {

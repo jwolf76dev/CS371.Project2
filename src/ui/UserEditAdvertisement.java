@@ -7,8 +7,8 @@ package ui;
 
 import db.DBManager;
 import db.Record;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+//import java.sql.PreparedStatement;
+//import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,13 +25,12 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
     String adID;
     
     public UserEditAdvertisement(DBManager DB, String adID) {
-        setTitle("Edit Advertisement" + adID);
+        setTitle("Edit Advertisement " + adID);
         this.DB=DB;
         this.userID=userID;
-        // TODO: populate table fields from DB record provided
         initComponents();
-//        populateTable();
         populateCategories();
+//        populateTable();
     }
 
     /**
@@ -146,6 +145,7 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void UserEdit_Update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserEdit_Update_ButtonActionPerformed
+        String id = this.adID;
         String title = this.UserEdit_Title_Field.getText();
         String details = this.UserEdit_Details_Field.getText();
         String category = (String)this.UserEdit_Category_ComboBox.getSelectedItem();        
@@ -164,7 +164,7 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             return;
         } 
-        boolean result = DB.addAdvertisement(title, details, price, category, userID);
+        boolean result = DB.userUpdateAdvertisement(id, title, details, price, category);
         if (result) {
             JOptionPane.showMessageDialog(this,
                     "The advertisement was updated",

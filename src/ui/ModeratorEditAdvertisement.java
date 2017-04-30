@@ -5,6 +5,10 @@
  */
 package ui;
 
+import db.DBManager;
+import db.Record;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jwolf
@@ -14,8 +18,17 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
     /**
      * Creates new form ModeratorEditAdvertisement
      */
-    public ModeratorEditAdvertisement() {
+    DBManager DB;
+    String userID;
+    String adID;
+
+    public ModeratorEditAdvertisement(DBManager DB, String adID) {
+        setTitle("Edit Advertisement " + adID);
+        this.DB = DB;
+        this.userID = userID;
         initComponents();
+        populateCategories();
+//        populateTable();
     }
 
     /**
@@ -88,6 +101,11 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
 
         ModeratorEdit_Update_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         ModeratorEdit_Update_Button.setText("Update Advertisement");
+        ModeratorEdit_Update_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ModeratorEdit_Update_ButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -144,50 +162,38 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ModeratorEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ModeratorEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ModeratorEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ModeratorEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void ModeratorEdit_Update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModeratorEdit_Update_ButtonActionPerformed
+        String adID = this.adID;
+        String category = (String) this.ModeratorEdit_Category_ComboBox.getSelectedItem();
+        String status = (String)this.ModeratorEdit_Status_ComboBox.getSelectedItem();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ModeratorEditAdvertisement().setVisible(true);
-            }
-        });
+        boolean result = DB.moderatorUpdateAdvertisement(adID, category, status);
+        if (result) {
+            JOptionPane.showMessageDialog(this,
+                    "The advertisement was updated",
+                    "Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE);
+//            parent.populateUserAdsTable(userID);
+        }
+    }//GEN-LAST:event_ModeratorEdit_Update_ButtonActionPerformed
+
+    private void populateCategories() {
+        this.ModeratorEdit_Category_ComboBox.removeAllItems();
+        this.ModeratorEdit_Category_ComboBox.addItem(new Record("All", "All"));
+        for (Record category : DB.getCategories()) {
+            this.ModeratorEdit_Category_ComboBox.addItem(category);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> ModeratorEdit_Category_ComboBox;
+    private javax.swing.JComboBox<Record> ModeratorEdit_Category_ComboBox;
     private javax.swing.JLabel ModeratorEdit_Category_Label;
     private javax.swing.JScrollPane ModeratorEdit_Details_Container;
     private javax.swing.JTextArea ModeratorEdit_Details_Field;
     private javax.swing.JLabel ModeratorEdit_Details_Label;
     private javax.swing.JTextField ModeratorEdit_Price_Field;
     private javax.swing.JLabel ModeratorEdit_Price_Label;
-    private javax.swing.JComboBox<String> ModeratorEdit_Status_ComboBox;
+    private javax.swing.JComboBox<Record> ModeratorEdit_Status_ComboBox;
     private javax.swing.JLabel ModeratorEdit_Status_Label;
     private javax.swing.JTextField ModeratorEdit_Title_Field;
     private javax.swing.JLabel ModeratorEdit_Title_Label;
