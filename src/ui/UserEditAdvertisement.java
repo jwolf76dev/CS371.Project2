@@ -31,7 +31,7 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         this.userID=userID;
         initComponents();
         populateCategories();
-        populateTable();
+//        populateTable();
     }
 
     /**
