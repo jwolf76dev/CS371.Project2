@@ -28,14 +28,14 @@ public class UserView extends javax.swing.JFrame {
     String[] userAdsColumns
             = new String[]{"Ad ID", "Title", "Description", "Price", "Status", "Date"};
     LinkedList<Advertisement> adList;
-    
+
     public UserView(DBManager DB, String userID) {
         this.setTitle("User: " + userID);
         this.DB = DB;
         this.userID = userID;
         initComponents();
         this.populateCategories();
-        this.populateAllAdsTable();
+        this.populateAllAdsTable("All", "Any Date", "");
         this.populateUserAdsTable(userID);
     }
 
@@ -95,6 +95,11 @@ public class UserView extends javax.swing.JFrame {
         User_Category_Label.setText("Category");
 
         User_SearchString_Field.setToolTipText("Enter keyword(s) to search for.");
+        User_SearchString_Field.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                User_SearchString_FieldKeyReleased(evt);
+            }
+        });
 
         User_Search_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Search_Button.setText("Search");
@@ -187,6 +192,11 @@ public class UserView extends javax.swing.JFrame {
         User_Delete_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Delete_Button.setText("Delete");
         User_Delete_Button.setToolTipText("Delete the currently highlighted row.");
+        User_Delete_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                User_Delete_ButtonActionPerformed(evt);
+            }
+        });
 
         User_Edit_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Edit_Button.setText("Edit");
@@ -274,7 +284,7 @@ public class UserView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void User_AllAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_User_AllAds_TabComponentShown
-        populateAllAdsTable();
+        populateAllAdsTable("All", "Any Date", "");
     }//GEN-LAST:event_User_AllAds_TabComponentShown
 
     private void User_MyAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_User_MyAds_TabComponentShown
@@ -288,11 +298,36 @@ public class UserView extends javax.swing.JFrame {
 
     private void User_Edit_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_User_Edit_ButtonActionPerformed
         int row = User_MyAdsResults_Table.getSelectedRow();
-        int adID = (Integer)User_MyAdsResults_Table.getValueAt(row, 0);
+        int adID = (Integer) User_MyAdsResults_Table.getValueAt(row, 0);
         UserEditAdvertisement editAd = new UserEditAdvertisement(this, DB, adID, userID);
         editAd.setVisible(true);
     }//GEN-LAST:event_User_Edit_ButtonActionPerformed
-    
+
+    private void User_Delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_User_Delete_ButtonActionPerformed
+        int row = User_MyAdsResults_Table.getSelectedRow();
+        int adID = (Integer) User_MyAdsResults_Table.getValueAt(row, 0);
+        int reply = JOptionPane.showConfirmDialog(this, "Confirm deletion", "Confirmation",
+                JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            if (DB.deleteAdByID(adID));
+            JOptionPane.showMessageDialog(this,
+                    "The advertisement was deleted",
+                    "Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE);
+            populateUserAdsTable(userID);
+            return;
+        }
+        return;
+
+    }//GEN-LAST:event_User_Delete_ButtonActionPerformed
+
+    private void User_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_User_SearchString_FieldKeyReleased
+        String category = this.User_Category_ComboBox.getSelectedItem().toString();
+        String period = this.User_Period_ComboBox.getSelectedItem().toString();
+        String searchText = this.User_SearchString_Field.getText();
+        populateAllAdsTable(category, period, searchText);
+    }//GEN-LAST:event_User_SearchString_FieldKeyReleased
+
     private void populateCategories() {
         this.User_Category_ComboBox.removeAllItems();
         this.User_Category_ComboBox.addItem(new Record("All", "All"));
@@ -300,13 +335,13 @@ public class UserView extends javax.swing.JFrame {
             this.User_Category_ComboBox.addItem(category);
         }
     }
-    
-    public void populateAllAdsTable() {
+
+    public void populateAllAdsTable(String category, String period, String searchText) {
         adList = new LinkedList();
-        Object[][] User_allAds = DB.getAllActiveAds();
+        Object[][] User_allAds = DB.searchActiveAds(category, period, searchText);
         this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
     }
-    
+
     public void populateUserAdsTable(String userID) {
         Object[][] User_myAds = DB.getAllUsersAds(userID);
         this.User_MyAdsResults_Table.setModel(new DefaultTableModel(User_myAds, userAdsColumns));

@@ -91,12 +91,12 @@ public class DBManager {
         return categoriesList;
     }
 
-    public Advertisement getAdByID(int id){
+    public Advertisement getAdByID(int id) {
         PreparedStatement stmt = null;
         Advertisement result = new Advertisement();
-        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, categoryID " +
-                "From Advertisements Where advertisementID = ?";
-        try{
+        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, categoryID "
+                + "From Advertisements Where advertisementID = ?";
+        try {
             stmt = connection.prepareStatement(query);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -106,7 +106,7 @@ public class DBManager {
                     .setDetails(rs.getString("advertisementDetails"))
                     .setPrice(rs.getFloat("price"))
                     .setCategoryID(rs.getString("categoryID"));
-                    
+
 //            result = new Object[5];            
 //            while (rs.next()){
 //                result[0] = rs.getInt("advertisementID");
@@ -115,45 +115,48 @@ public class DBManager {
 //                result[3] = rs.getDouble("price");
 //                result[4] = rs.getString("categoryID");
 //            }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
 
     }
-    public Object[][] getAllActiveAds() {
-        PreparedStatement stmt = null;
-        Object[][] results = new Object[][]{};
-
-        String query = "SELECT A.advertisementTitle, A.advertisementDetails, "
-                + "A.price, DATE(A.advertisementDateTime) advertisementDate "
-                + "FROM Advertisements A "
-                + "WHERE statusID = 'AC'";
-
-        try {
-            stmt = connection.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
-            results = getActiveAds(rs);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return results;
-    }
+//    public Object[][] getAllActiveAds() {
+//        PreparedStatement stmt = null;
+//        Object[][] results = new Object[][]{};
+//
+//        String query = "SELECT A.advertisementTitle, A.advertisementDetails, "
+//                + "A.price, DATE(A.advertisementDateTime) advertisementDate "
+//                + "FROM Advertisements A "
+//                + "WHERE statusID = 'AC'";
+//
+//        try {
+//            stmt = connection.prepareStatement(query);
+//            ResultSet rs = stmt.executeQuery();
+//            results = getActiveAds(rs);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return results;
+//    }
 
     private Object[][] getActiveAds(ResultSet rs) throws SQLException {
         int count = getResultSetSize(rs);
         Object[][] result = new Object[count][4];
         int index = 0;
-        do {
-            String title = rs.getString("advertisementTitle");
-            String details = rs.getString("advertisementDetails");
-            float price = rs.getFloat("price");
-            String date = rs.getString("advertisementDate");
+        if (getResultSetSize(rs) > 0) {
+            do {
+                String title = rs.getString("advertisementTitle");
+                String details = rs.getString("advertisementDetails");
+                float price = rs.getFloat("price");
+                String date = rs.getString("advertisementDate");
 
-            Advertisement advertisement = new Advertisement(title, details, price, date);
-            result[index++] = advertisement.activeAdsToArray();
-        } while (rs.next());
+                Advertisement advertisement = new Advertisement(title, details, price, date);
+                result[index++] = advertisement.activeAdsToArray();
+            } while (rs.next());
+        }
         return result;
+
     }
 
     public Object[][] getAllUsersAds(String userID) {
@@ -195,8 +198,7 @@ public class DBManager {
         return result;
     }
 
-    public boolean addAdvertisement(String title, String details, String price, String category,
-            String userID) {
+    public boolean addAdvertisement(Advertisement advertisement) {
         PreparedStatement stmt = null;
 
         String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, "
@@ -205,11 +207,11 @@ public class DBManager {
 
         try {
             stmt = connection.prepareStatement(query);
-            stmt.setString(1, title);
-            stmt.setString(2, details);
-            stmt.setString(3, price);
-            stmt.setString(4, category);
-            stmt.setString(5, userID);
+            stmt.setString(1, advertisement.getTitle());
+            stmt.setString(2, advertisement.getDetails());
+            stmt.setFloat(3, advertisement.getPrice());
+            stmt.setString(4, advertisement.getCategoryID());
+            stmt.setString(5, advertisement.getUserID());
             stmt.setString(6, "PN");
             stmt.executeUpdate();
             return true;
@@ -219,7 +221,7 @@ public class DBManager {
             return false;
         }
     }
-    
+
     public boolean userUpdateAdvertisement(Advertisement advertisement) {
         PreparedStatement stmt = null;
 
@@ -245,7 +247,7 @@ public class DBManager {
         }
     }
 
-public boolean moderatorUpdateAdvertisement(String ID, String category, String status) {
+    public boolean moderatorUpdateAdvertisement(String ID, String category, String status) {
         PreparedStatement stmt = null;
 
         String query = "UPDATE Advertisements "
@@ -266,7 +268,7 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
             return false;
         }
     }
-        
+
     public Object[][] getAllUnclaimedAds() {
         PreparedStatement stmt = null;
         Object[][] results = new Object[][]{};
@@ -300,7 +302,7 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
             String user = rs.getString("userID");
             String date = rs.getString("advertisementDate");
 
-            Advertisement advertisement = new Advertisement(id, title, details, price, 
+            Advertisement advertisement = new Advertisement(id, title, details, price,
                     category, user, date);
             result[index++] = advertisement.unclaimedAdsToArray();
         } while (rs.next());
@@ -343,23 +345,24 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
             String status = rs.getString("statusID");
             String date = rs.getString("advertisementDate");
 
-            Advertisement advertisement = new Advertisement(id, title, details, price, 
+            Advertisement advertisement = new Advertisement(id, title, details, price,
                     category, user, status, date);
             result[index++] = advertisement.moderatorAdsToArray();
         } while (rs.next());
         return result;
     }
 
-    public boolean deleteAdByID(int ID){
+    public boolean deleteAdByID(int ID) {
         PreparedStatement stmt = null;
         String query = "Delete From Advertisements Where advertisementID = ?";
-        try{
+        try {
             stmt = connection.prepareStatement(query);
             stmt.setInt(1, ID);
             int delete = stmt.executeUpdate();
-            if(delete == 1)
+            if (delete == 1) {
                 return true;
-        }catch (Exception e){
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -369,7 +372,7 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
         PreparedStatement stmt = null;
         ResultSet rs;
         int month = Utilities.getMonth(period);
-        boolean hasCategory = !category.equals("ALL");
+        boolean hasCategory = !category.equals("All");
         boolean hasPeriod = month != -1;
         boolean hasSearchText = !StringUtils.isNullOrEmpty(searchText);
         String[] searchArray = searchText.split(" ");

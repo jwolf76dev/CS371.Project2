@@ -177,6 +177,9 @@
               <Properties>
                 <Property name="toolTipText" type="java.lang.String" value="Enter keyword(s) to search for."/>
               </Properties>
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="User_SearchString_FieldKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="User_Search_Button">
               <Properties>
@@ -329,6 +332,9 @@
                 <Property name="text" type="java.lang.String" value="Delete"/>
                 <Property name="toolTipText" type="java.lang.String" value="Delete the currently highlighted row."/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="User_Delete_ButtonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="User_Edit_Button">
               <Properties>

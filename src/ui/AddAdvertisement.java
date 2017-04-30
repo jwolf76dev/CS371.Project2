@@ -5,6 +5,8 @@
  */
 package ui;
 
+import com.mysql.jdbc.StringUtils;
+import db.Advertisement;
 import db.DBManager;
 import db.Record;
 import javax.swing.JOptionPane;
@@ -21,7 +23,8 @@ public class AddAdvertisement extends javax.swing.JFrame {
     DBManager DB;
     String userID;
     UserView parent;
-
+    Advertisement advertisement;
+    
     public AddAdvertisement(UserView parent, DBManager DB, String userID) {
         setTitle("Add Advertisement");
         this.parent = parent;
@@ -29,8 +32,10 @@ public class AddAdvertisement extends javax.swing.JFrame {
         this.userID = userID;
         initComponents();
         populateCategories();
+        advertisement = new Advertisement();
+        advertisement.setUserID(userID);
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -146,32 +151,48 @@ public class AddAdvertisement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void Add_Add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_Add_ButtonActionPerformed
-        String title = this.Add_Title_Field.getText();
-        String details = this.Add_Details_Field.getText();
-        Record category = (Record) this.Add_Category_ComboBox.getSelectedItem();
-        String price = this.Add_Price_Field.getText();
 
-        if (title.trim().equals("")) {
+        if (StringUtils.isNullOrEmpty(this.Add_Title_Field.getText().trim())) {
             JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
+        } else {
+            advertisement.setTitle(this.Add_Title_Field.getText());
         }
-        if (details.trim().equals("")) {
+
+        if (StringUtils.isNullOrEmpty(this.Add_Details_Field.getText().trim())) {
             JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
+        } else {
+            advertisement.setDetails(this.Add_Details_Field.getText());
         }
+
+        Record category = (Record) this.Add_Category_ComboBox.getSelectedItem();
         if (category.getID().equals("Choose")) {
             JOptionPane.showMessageDialog(this, "No category selected", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
+        } else {
+            advertisement.setCategoryID(category.getID());
         }
-        if (price.trim().equals("")) {
-            JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
+
+        try {
+            if (StringUtils.isNullOrEmpty(this.Add_Price_Field.getText())) {
+                JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                advertisement.setPrice(Float.parseFloat(this.Add_Price_Field.getText()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Price field is not a number", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        boolean result = DB.addAdvertisement(title, details, price, category.getID(), userID);
+
+        boolean result = DB.addAdvertisement(advertisement);
         if (result) {
             JOptionPane.showMessageDialog(this,
                     "The new advertisement was added",
