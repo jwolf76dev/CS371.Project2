@@ -7,6 +7,9 @@ package ui;
 
 import db.DBManager;
 import db.Record;
+import db.Advertisement;
+import Utilities.Utilities;
+import com.mysql.jdbc.StringUtils;
 import javax.swing.JOptionPane;
 
 /**
@@ -22,16 +25,17 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
     int adID;
     String userID;
     UserView parent;
+    Advertisement advertisement = null;
 
     public UserEditAdvertisement(UserView parent, DBManager DB, int adID, String userID) {
-        setTitle("Edit Advertisement " + adID);
-        this.parent=parent;
+        setTitle("Edit Ad: " + adID);
+        this.parent = parent;
         this.DB = DB;
         this.adID = adID;
-        this.userID=userID;
+        this.userID = userID;
         initComponents();
         populateCategories();
-//        populateTable();
+        populateTable(adID);
     }
 
     /**
@@ -146,34 +150,36 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void UserEdit_Update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserEdit_Update_ButtonActionPerformed
-        int adID = this.adID;
-        String title = this.UserEdit_Title_Field.getText();
-        String details = this.UserEdit_Details_Field.getText();
+        advertisement.setID(this.adID);
+        advertisement.setTitle(this.UserEdit_Title_Field.getText().trim());
+        advertisement.setDetails(this.UserEdit_Details_Field.getText().trim());
         Record category = (Record) this.UserEdit_Category_ComboBox.getSelectedItem();
-        String price = this.UserEdit_Price_Field.getText();
+        advertisement.setCategoryID(category.getID());
+        try {
+            if (StringUtils.isNullOrEmpty(this.UserEdit_Price_Field.getText())) {
+                JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                advertisement.setPrice(Float.parseFloat(this.UserEdit_Price_Field.getText()));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Price field is not a number", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        if (title.trim().equals("")) {
+        if (advertisement.getTitle().equals("")) {
             JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (details.trim().equals("")) {
+        if (advertisement.getDetails().equals("")) {
             JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (category.getID().equals("Choose")) {
-            JOptionPane.showMessageDialog(this, "No category selected", "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (price.trim()
-                .equals("")) {
-            JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        boolean result = DB.userUpdateAdvertisement(adID, title, details, price, category.getID());
+        boolean result = DB.userUpdateAdvertisement(advertisement);
         if (result) {
             JOptionPane.showMessageDialog(this,
                     "The advertisement was updated",
@@ -184,9 +190,20 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         }
     }
 
+    private void populateTable(int adID) {
+        advertisement = DB.getAdByID(adID);
+        this.UserEdit_Title_Field.setText(advertisement.getTitle());
+        this.UserEdit_Details_Field.setText(advertisement.getDetails());
+        this.UserEdit_Price_Field.setText(String.valueOf(advertisement.getPrice()));
+        try {
+            this.UserEdit_Category_ComboBox.setSelectedItem(Utilities.findCategory(this.UserEdit_Category_ComboBox, advertisement.getCategoryID()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void populateCategories() {
         this.UserEdit_Category_ComboBox.removeAllItems();
-        this.UserEdit_Category_ComboBox.addItem(new Record("Choose", "<Choose a category>"));
         for (Record category : DB.getCategories()) {
             this.UserEdit_Category_ComboBox.addItem(category);
         }

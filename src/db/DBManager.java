@@ -91,52 +91,30 @@ public class DBManager {
         return categoriesList;
     }
 
-//    public Object[][] getAllActiveAds() {
-//        PreparedStatement stmt = null;
-//        Object[][] results = new Object[][]{};
-//        
-//        String query = "SELECT A.advertisementDateTime, A.advertisementTitle, "
-//                + "A.advertisementDetails, A.price"
-//                + "FROM Advertisements A "
-//                + "INNER JOIN Statuses S ON S.statusID=A.statusID "
-//                + "WHERE statusName = 'ACTIVE'";
-//        
-//        try {
-//            stmt = connection.prepareStatement(query);
-//            ResultSet rs = stmt.executeQuery();
-//            int count = getResultSetSize(rs);
-//            int index = 0;
-//            Object[][] result = new Object[count][4];
-//            while (rs.next()) {
-//                result[index][0] = rs.getString("advertisementTitle");
-//                result[index][1] = rs.getString("advertisementDetails");
-//                result[index][2] = rs.getDouble("price");
-//                result[index][3] = rs.getDate("advertisementDateTime");
-//                index++;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return results;
-//    }
-
-    public Object[] getAdByID(int id){
+    public Advertisement getAdByID(int id){
         PreparedStatement stmt = null;
+        Advertisement result = new Advertisement();
         String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, categoryID " +
                 "From Advertisements Where advertisementID = ?";
-        Object[] result = null;
         try{
             stmt = connection.prepareStatement(query);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
-            result = new Object[5];
-            while (rs.next()){
-                result[0] = rs.getInt("advertisementID");
-                result[1] = rs.getString("advertisementTitle");
-                result[2] = rs.getString("advertisementDetails");
-                result[3] = rs.getDouble("price");
-                result[4] = rs.getString("categoryID");
-            }
+            rs.next();
+            result.setID(rs.getInt("advertisementID"))
+                    .setTitle(rs.getString("advertisementTitle"))
+                    .setDetails(rs.getString("advertisementDetails"))
+                    .setPrice(rs.getFloat("price"))
+                    .setCategoryID(rs.getString("categoryID"));
+                    
+//            result = new Object[5];            
+//            while (rs.next()){
+//                result[0] = rs.getInt("advertisementID");
+//                result[1] = rs.getString("advertisementTitle");
+//                result[2] = rs.getString("advertisementDetails");
+//                result[3] = rs.getDouble("price");
+//                result[4] = rs.getString("categoryID");
+//            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -169,7 +147,7 @@ public class DBManager {
         do {
             String title = rs.getString("advertisementTitle");
             String details = rs.getString("advertisementDetails");
-            String price = rs.getString("price");
+            float price = rs.getFloat("price");
             String date = rs.getString("advertisementDate");
 
             Advertisement advertisement = new Advertisement(title, details, price, date);
@@ -204,10 +182,10 @@ public class DBManager {
         Object[][] result = new Object[count][6];
         int index = 0;
         do {
-            String id = rs.getString("advertisementID");
+            int id = rs.getInt("advertisementID");
             String title = rs.getString("advertisementTitle");
             String details = rs.getString("advertisementDetails");
-            String price = rs.getString("price");
+            float price = rs.getFloat("price");
             String status = rs.getString("statusID");
             String date = rs.getString("advertisementDate");
 
@@ -223,7 +201,7 @@ public class DBManager {
 
         String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, "
                 + "advertisementDateTime, price, categoryID, userID, statusID) "
-                + "VALUES (?,?,CURRENT_DATE(),?,?,?,?,?)";
+                + "VALUES (?,?,CURRENT_DATE(),?,?,?,?)";
 
         try {
             stmt = connection.prepareStatement(query);
@@ -242,25 +220,22 @@ public class DBManager {
         }
     }
     
-    public boolean userUpdateAdvertisement(int ID, String title, String details, String price, 
-            String category) {
+    public boolean userUpdateAdvertisement(Advertisement advertisement) {
         PreparedStatement stmt = null;
 
         String query = "UPDATE Advertisements "
                 + "SET advertisementTitle= ?, advertisementDetails= ?, price= ?, "
-                + "categoryID= ?, moderatorID= ?, statusID= ?) "
-                + "WHERE advertisementID= ? "
-                + "VALUES (?,?,?,?,?,?,?)";
+                + "categoryID= ?, statusID= ? "
+                + "WHERE advertisementID= ?";
 
         try {
             stmt = connection.prepareStatement(query);
-            stmt.setString(1, title);
-            stmt.setString(2, details);
-            stmt.setString(3, price);
-            stmt.setString(4, category);
-            stmt.setString(5, "NULL");
-            stmt.setString(6, "PN");
-            stmt.setInt(7, ID);
+            stmt.setString(1, advertisement.getTitle());
+            stmt.setString(2, advertisement.getDetails());
+            stmt.setFloat(3, advertisement.getPrice());
+            stmt.setString(4, advertisement.getCategoryID());
+            stmt.setString(5, "PN");
+            stmt.setInt(6, advertisement.getID());
             stmt.executeUpdate();
             return true;
 
@@ -317,10 +292,10 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
         Object[][] result = new Object[count][7];
         int index = 0;
         do {
-            String id = rs.getString("advertisementID");
+            int id = rs.getInt("advertisementID");
             String title = rs.getString("advertisementTitle");
             String details = rs.getString("advertisementDetails");
-            String price = rs.getString("price");
+            float price = rs.getFloat("price");
             String category = rs.getString("categoryID");
             String user = rs.getString("userID");
             String date = rs.getString("advertisementDate");
@@ -359,10 +334,10 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
         Object[][] result = new Object[count][8];
         int index = 0;
         do {
-            String id = rs.getString("advertisementID");
+            int id = rs.getInt("advertisementID");
             String title = rs.getString("advertisementTitle");
             String details = rs.getString("advertisementDetails");
-            String price = rs.getString("price");
+            float price = rs.getFloat("price");
             String category = rs.getString("categoryID");
             String user = rs.getString("userID");
             String status = rs.getString("statusID");

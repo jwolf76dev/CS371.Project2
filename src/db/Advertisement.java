@@ -10,24 +10,24 @@ package db;
  * @author jwolf
  */
 public class Advertisement {
-    private String ID;
+    private int ID;
     private String title;
     private String details;
-    private String price;
+    private float price;
     private String categoryID;
     private String userID;
     private String statusID;
     private String moderatorID;
     private String date;
     
-    public Advertisement(String title, String details, String price, String date) {
+    public Advertisement(String title, String details, float price, String date) {
         this.title=title;
         this.details=details;
         this.price=price;
         this.date=date;
     }
     
-    public Advertisement (String ID, String title, String details, String price,
+    public Advertisement (int ID, String title, String details, float price,
             String statusID, String date) {
         this.ID=ID;
         this.title=title;
@@ -37,7 +37,7 @@ public class Advertisement {
         this.date=date;
     }
 
-    public Advertisement(String ID, String title, String details, String price,
+    public Advertisement(int ID, String title, String details, float price,
             String categoryID, String userID, String date) {
         this.ID = ID;
         this.title = title;
@@ -48,8 +48,8 @@ public class Advertisement {
         this.date = date;
     }
 
-    public Advertisement(String ID, String title, String details,
-            String price, String categoryID, String userID, String statusID,
+    public Advertisement(int ID, String title, String details,
+            float price, String categoryID, String userID, String statusID,
             String date) {
         this.ID=ID;
         this.title=title;
@@ -61,68 +61,89 @@ public class Advertisement {
         this.date=date;
     }
 
-    public String getID() {
+    public Advertisement() {    }
+    
+    
+    public int getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public Advertisement setID(int ID) {
         this.ID = ID;
+        return this;
     }
 
     public String getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public Advertisement setUserID(String userID) {
         this.userID = userID;
+        return this;
     }
 
     public String getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public Advertisement setDate(String date) {
         this.date = date;
+        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public Advertisement setTitle(String title) {
         this.title = title;
+        return this;
     }
 
     public String getDetails() {
         return details;
     }
 
-    public void setDetails(String details) {
+    public Advertisement setDetails(String details) {
         this.details = details;
+        return this;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public Advertisement setPrice(float price) {
         this.price = price;
+        return this;
     }
 
+    public String getCategoryID() {
+        return categoryID;
+    }
+
+    public Advertisement setCategoryID(String categoryID) {
+        this.categoryID = categoryID;
+        return this;
+    }
+
+    
     public String getStatusID() {
         return statusID;
     }
 
-    public void setStatusID(String statusID) {
+    public Advertisement setStatusID(String statusID) {
         this.statusID = statusID;
+        return this;
     }
 
     public String getModeratorID() {
         return moderatorID;
     }
 
-    public void setModeratorID(String moderatorID) {
+    public Advertisement setModeratorID(String moderatorID) {
         this.moderatorID = moderatorID;
+        return this;
     }
 
     Object[] activeAdsToArray(){
