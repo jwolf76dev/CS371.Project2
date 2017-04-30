@@ -1,9 +1,12 @@
 package Utilities;
 
+import db.Advertisement;
+import java.util.LinkedList;
+
 /**
  * Created by luke_ on 4/29/2017.
  */
-public class MonthUtils {
+public class Utilities {
     public static int getMonth(String text){
         int month;
         switch (text){
@@ -28,5 +31,10 @@ public class MonthUtils {
 
         }
         return month;
+    }
+    
+    public static LinkedList<Advertisement> makeAdList(Object[][] advertisements) {
+        LinkedList<Advertisement> adList = new LinkedList();
+        
     }
 }

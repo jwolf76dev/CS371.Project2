@@ -7,8 +7,6 @@ package ui;
 
 import db.DBManager;
 import db.Record;
-//import java.sql.PreparedStatement;
-//import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,16 +19,19 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
      * Creates new form UserEditAdvertisement
      */
     DBManager DB;
+    int adID;
     String userID;
-    String adID;
-    
-    public UserEditAdvertisement(DBManager DB, String adID) {
+    UserView parent;
+
+    public UserEditAdvertisement(UserView parent, DBManager DB, int adID, String userID) {
         setTitle("Edit Advertisement " + adID);
-        this.DB=DB;
+        this.parent=parent;
+        this.DB = DB;
+        this.adID = adID;
         this.userID=userID;
         initComponents();
         populateCategories();
-//        populateTable();
+        populateTable();
     }
 
     /**
@@ -145,55 +146,52 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void UserEdit_Update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserEdit_Update_ButtonActionPerformed
-        String id = this.adID;
+        int adID = this.adID;
         String title = this.UserEdit_Title_Field.getText();
         String details = this.UserEdit_Details_Field.getText();
-        String category = (String)this.UserEdit_Category_ComboBox.getSelectedItem();        
+        Record category = (Record) this.UserEdit_Category_ComboBox.getSelectedItem();
         String price = this.UserEdit_Price_Field.getText();
 
         if (title.trim().equals("")) {
             JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
-        } if (details.trim().equals("")) {
+        }
+        if (details.trim().equals("")) {
             JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
-        } if (price.trim().equals("")) {
+        }
+        if (category.getID().equals("Choose")) {
+            JOptionPane.showMessageDialog(this, "No category selected", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (price.trim()
+                .equals("")) {
             JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
-        } 
-        boolean result = DB.userUpdateAdvertisement(id, title, details, price, category);
+        }
+        boolean result = DB.userUpdateAdvertisement(adID, title, details, price, category.getID());
         if (result) {
             JOptionPane.showMessageDialog(this,
                     "The advertisement was updated",
                     "Confirmation",
                     JOptionPane.INFORMATION_MESSAGE);
-//            parent.populateUserAdsTable(userID);
+            parent.populateUserAdsTable(userID);
+            this.setVisible(false);
         }
-    }                                              
-
-/*    private void populateTable(DBManager result) {
-        String title = ;
-        String details = ;
-        Record category = ;
-        String price = ;
-        
-        this.UserEdit_Title_Field.setText(title);
-        this.UserEdit_Details_Field.setText(details);
-        this.UserEdit_Category_ComboBox. ; /*set the current record's category*/
-//        this.UserEdit_Price_Field.setText(price);
-//    }
+    }
 
     private void populateCategories() {
         this.UserEdit_Category_ComboBox.removeAllItems();
-        this.UserEdit_Category_ComboBox.addItem(new Record("All", "All"));
+        this.UserEdit_Category_ComboBox.addItem(new Record("Choose", "<Choose a category>"));
         for (Record category : DB.getCategories()) {
             this.UserEdit_Category_ComboBox.addItem(category);
         }
     }//GEN-LAST:event_UserEdit_Update_ButtonActionPerformed
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<Record> UserEdit_Category_ComboBox;
     private javax.swing.JLabel UserEdit_Category_Label;

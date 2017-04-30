@@ -7,6 +7,7 @@ package ui;
 
 import db.DBManager;
 import db.Record;
+import db.Advertisement;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -26,6 +27,7 @@ public class UserView extends javax.swing.JFrame {
             = new String[]{"Title", "Description", "Price", "Date"};
     String[] userAdsColumns
             = new String[]{"Ad ID", "Title", "Description", "Price", "Status", "Date"};
+    LinkedList<Advertisement> adList;
     
     public UserView(DBManager DB, String userID) {
         this.setTitle("User: " + userID);
@@ -280,14 +282,15 @@ public class UserView extends javax.swing.JFrame {
     }//GEN-LAST:event_User_MyAds_TabComponentShown
 
     private void User_AddAd_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_User_AddAd_ButtonActionPerformed
-        AddAdvertisement addAd = new AddAdvertisement(/*this,*/ DB, userID);
+        AddAdvertisement addAd = new AddAdvertisement(this, DB, userID);
         addAd.setVisible(true);
     }//GEN-LAST:event_User_AddAd_ButtonActionPerformed
 
     private void User_Edit_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_User_Edit_ButtonActionPerformed
-//        //get the ID of the selected record, or send the record already pulled
-//        UserEditAdvertisement editAd = new UserEditAdvertisement(DB, ID/rs);
-//        editAd.setVisible(true);
+        int row = User_MyAdsResults_Table.getSelectedRow();
+        int adID = (Integer)User_MyAdsResults_Table.getValueAt(row, 0);
+        UserEditAdvertisement editAd = new UserEditAdvertisement(this, DB, adID, userID);
+        editAd.setVisible(true);
     }//GEN-LAST:event_User_Edit_ButtonActionPerformed
     
     private void populateCategories() {
@@ -299,6 +302,7 @@ public class UserView extends javax.swing.JFrame {
     }
     
     public void populateAllAdsTable() {
+        adList = new LinkedList();
         Object[][] User_allAds = DB.getAllActiveAds();
         this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
     }

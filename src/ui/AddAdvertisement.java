@@ -20,11 +20,11 @@ public class AddAdvertisement extends javax.swing.JFrame {
      */
     DBManager DB;
     String userID;
-//    AddAdvertisement parent;
+    UserView parent;
 
-    public AddAdvertisement(/*AddAdvertisement parent,*/ DBManager DB, String userID) {
+    public AddAdvertisement(UserView parent, DBManager DB, String userID) {
         setTitle("Add Advertisement");
-//        this.parent = parent;
+        this.parent = parent;
         this.DB = DB;
         this.userID = userID;
         initComponents();
@@ -148,35 +148,43 @@ public class AddAdvertisement extends javax.swing.JFrame {
     private void Add_Add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_Add_ButtonActionPerformed
         String title = this.Add_Title_Field.getText();
         String details = this.Add_Details_Field.getText();
-        String category = (String)this.Add_Category_ComboBox.getSelectedItem();        
+        Record category = (Record) this.Add_Category_ComboBox.getSelectedItem();
         String price = this.Add_Price_Field.getText();
 
         if (title.trim().equals("")) {
             JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
-        } if (details.trim().equals("")) {
+        }
+        if (details.trim().equals("")) {
             JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
-        } if (price.trim().equals("")) {
+        }
+        if (category.getID().equals("Choose")) {
+            JOptionPane.showMessageDialog(this, "No category selected", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (price.trim().equals("")) {
             JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
-        } 
-        boolean result = DB.addAdvertisement(title, details, price, category, userID);
+        }
+        boolean result = DB.addAdvertisement(title, details, price, category.getID(), userID);
         if (result) {
             JOptionPane.showMessageDialog(this,
-                    "The new advertisement was added correctly",
+                    "The new advertisement was added",
                     "Confirmation",
                     JOptionPane.INFORMATION_MESSAGE);
-//            parent.populateUserAdsTable(userID);
+            parent.populateUserAdsTable(userID);
+            this.setVisible(false);
         }
     }//GEN-LAST:event_Add_Add_ButtonActionPerformed
 
     private void populateCategories() {
         this.Add_Category_ComboBox.removeAllItems();
-        this.Add_Category_ComboBox.addItem(new Record("All", "All"));
+        this.Add_Category_ComboBox.addItem(new Record("Choose", "<Choose a category>"));
         for (Record category : DB.getCategories()) {
             this.Add_Category_ComboBox.addItem(category);
         }

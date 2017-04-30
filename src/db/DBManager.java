@@ -5,7 +5,7 @@
  */
 package db;
 
-import Utilities.MonthUtils;
+import Utilities.Utilities;
 import com.mysql.jdbc.StringUtils;
 
 import java.sql.*;
@@ -198,8 +198,8 @@ public class DBManager {
         PreparedStatement stmt = null;
 
         String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, "
-                + "advertisementDateTime, price, categoryID, userID, moderatorID, statusID) "
-                + "VALUES (?,?,CURRENT_DATE(),?,?,?,?,?)";
+                + "advertisementDateTime, price, categoryID, userID, statusID) "
+                + "VALUES (?,?,CURRENT_DATE(),?,?,?,?)";
 
         try {
             stmt = connection.prepareStatement(query);
@@ -208,8 +208,7 @@ public class DBManager {
             stmt.setString(3, price);
             stmt.setString(4, category);
             stmt.setString(5, userID);
-            stmt.setString(6, "NULL");
-            stmt.setString(7, "PN");
+            stmt.setString(6, "PN");
             stmt.executeUpdate();
             return true;
 
@@ -219,7 +218,7 @@ public class DBManager {
         }
     }
     
-    public boolean userUpdateAdvertisement(String ID, String title, String details, String price, 
+    public boolean userUpdateAdvertisement(int ID, String title, String details, String price, 
             String category) {
         PreparedStatement stmt = null;
 
@@ -237,7 +236,7 @@ public class DBManager {
             stmt.setString(4, category);
             stmt.setString(5, "NULL");
             stmt.setString(6, "PN");
-            stmt.setString(7, ID);
+            stmt.setInt(7, ID);
             stmt.executeUpdate();
             return true;
 
@@ -355,7 +354,7 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
     public Object[][] searchActiveAds(String category, String period, String searchText) {
         PreparedStatement stmt = null;
         ResultSet rs;
-        int month = MonthUtils.getMonth(period);
+        int month = Utilities.getMonth(period);
         boolean hasCategory = !category.equals("ALL");
         boolean hasPeriod = month != -1;
         boolean hasSearchText = !StringUtils.isNullOrEmpty(searchText);
