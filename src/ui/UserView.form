@@ -57,6 +57,9 @@
         <Property name="text" type="java.lang.String" value="Add Advertisement"/>
         <Property name="toolTipText" type="java.lang.String" value="Add a new advertisement."/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="User_AddAd_ButtonActionPerformed"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JTabbedPane" name="User_Tab_Container">
       <Properties>

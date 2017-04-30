@@ -153,7 +153,7 @@
         </Property>
       </Properties>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Record&gt;"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="Add_Price_Label">
@@ -179,6 +179,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Add Advertisement"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Add_Add_ButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

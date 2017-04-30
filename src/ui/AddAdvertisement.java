@@ -5,6 +5,10 @@
  */
 package ui;
 
+import db.DBManager;
+import db.Record;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jwolf
@@ -14,8 +18,17 @@ public class AddAdvertisement extends javax.swing.JFrame {
     /**
      * Creates new form AddAdvertisement
      */
-    public AddAdvertisement() {
+    DBManager DB;
+    String userID;
+//    AddAdvertisement parent;
+
+    public AddAdvertisement(/*AddAdvertisement parent,*/ DBManager DB, String userID) {
+        setTitle("Add Advertisement");
+//        this.parent = parent;
+        this.DB = DB;
+        this.userID = userID;
         initComponents();
+        populateCategories();
     }
 
     /**
@@ -77,6 +90,11 @@ public class AddAdvertisement extends javax.swing.JFrame {
 
         Add_Add_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Add_Add_Button.setText("Add Advertisement");
+        Add_Add_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Add_Add_ButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -127,51 +145,46 @@ public class AddAdvertisement extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+    private void Add_Add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_Add_ButtonActionPerformed
+        String title = this.Add_Title_Field.getText();
+        String details = this.Add_Details_Field.getText();
+        String category = (String)this.Add_Category_ComboBox.getSelectedItem();        
+        String price = this.Add_Price_Field.getText();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddAdvertisement().setVisible(true);
-            }
-        });
+        if (title.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        } if (details.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        } if (price.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        } 
+        boolean result = DB.addAdvertisement(title, details, price, category, userID);
+        if (result) {
+            JOptionPane.showMessageDialog(this,
+                    "The new advertisement was added correctly",
+                    "Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE);
+//            parent.populateUserAdsTable(userID);
+        }
+    }//GEN-LAST:event_Add_Add_ButtonActionPerformed
+
+    private void populateCategories() {
+        this.Add_Category_ComboBox.removeAllItems();
+        this.Add_Category_ComboBox.addItem(new Record("All", "All"));
+        for (Record category : DB.getCategories()) {
+            this.Add_Category_ComboBox.addItem(category);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Add_Add_Button;
-    private javax.swing.JComboBox<String> Add_Category_ComboBox;
+    private javax.swing.JComboBox<Record> Add_Category_ComboBox;
     private javax.swing.JLabel Add_Category_Label;
     private javax.swing.JScrollPane Add_Details_Container;
     private javax.swing.JTextArea Add_Details_Field;

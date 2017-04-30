@@ -193,7 +193,29 @@ public class DBManager {
         return result;
     }
 
-public Object[][] getAllUnclaimedAds() {
+    public boolean addAdvertisement(String title, String details, String price, String category, String userID) {
+        PreparedStatement stmt = null;
+
+        String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, advertisementDateTime, price, categoryID, userID, moderatorID, statusID) "
+                + "VALUES (?,?,CURRENT_DATE(),?,?,?,NULL,'PN')";
+
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, title);
+            stmt.setString(2, details);
+            stmt.setString(3, price);
+            stmt.setString(4, category);
+            stmt.setString(5, userID);
+            stmt.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Object[][] getAllUnclaimedAds() {
         PreparedStatement stmt = null;
         Object[][] results = new Object[][]{};
 
@@ -274,17 +296,17 @@ public Object[][] getAllUnclaimedAds() {
         return result;
     }
 
-    public Object[][] searchActiveAds(String category, String period, String searchText){
+    public Object[][] searchActiveAds(String category, String period, String searchText) {
         PreparedStatement stmt = null;
         ResultSet rs;
         int month = MonthUtils.getMonth(period);
         boolean hasCategory = !category.equals("ALL");
         boolean hasPeriod = month != -1;
         boolean hasSearchText = !StringUtils.isNullOrEmpty(searchText);
-        String []searchArray = searchText.split(" ");
-        String query = "Select advertisementTitle, advertisementDetails, price , Date(advertisementDateTime) as advertisementDate " +
-                "From Advertisements " +
-                "Where statusID = 'AC'";
+        String[] searchArray = searchText.split(" ");
+        String query = "Select advertisementTitle, advertisementDetails, price , Date(advertisementDateTime) as advertisementDate "
+                + "From Advertisements "
+                + "Where statusID = 'AC'";
         try {
             stmt = connection.prepareStatement(query);
             if (hasCategory || hasSearchText || hasPeriod) {
@@ -320,29 +342,28 @@ public Object[][] getAllUnclaimedAds() {
                         stmt = addSearchQueryValues(stmt, searchArray, 2);
 
                     }
-                }
-                    else {
-                        stmt = connection.prepareStatement(query);
+                } else {
+                    stmt = connection.prepareStatement(query);
                     stmt = addSearchQueryValues(stmt, searchArray, 1);
-                    }
-
+                }
 
             }
             rs = stmt.executeQuery();
-            return getActiveAds(rs);        } catch (Exception e){
+            return getActiveAds(rs);
+        } catch (Exception e) {
             e.printStackTrace();
             return new Object[][]{};
         }
     }
 
-    private String buildSearchQuery(String query, String [] searchArray){
-        for(String text: searchArray){
-            query +=" And (advertisementTitle LIKE ? OR advertisementDetails Like ?)";
+    private String buildSearchQuery(String query, String[] searchArray) {
+        for (String text : searchArray) {
+            query += " And (advertisementTitle LIKE ? OR advertisementDetails Like ?)";
         }
         return query;
     }
 
-    private PreparedStatement addSearchQueryValues(PreparedStatement stmt, String[] searchArray, int startIndex){
+    private PreparedStatement addSearchQueryValues(PreparedStatement stmt, String[] searchArray, int startIndex) {
         int index = startIndex;
         try {
             for (String text : searchArray) {
@@ -351,7 +372,7 @@ public Object[][] getAllUnclaimedAds() {
                 stmt.setString(index, "%" + text + "%");
                 index++;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return stmt;

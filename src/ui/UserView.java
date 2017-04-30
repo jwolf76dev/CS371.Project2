@@ -26,7 +26,7 @@ public class UserView extends javax.swing.JFrame {
             = new String[]{"Title", "Description", "Price", "Date"};
     String[] userAdsColumns
             = new String[]{"Ad ID", "Title", "Description", "Price", "Status", "Date"};
-
+    
     public UserView(DBManager DB, String userID) {
         this.setTitle("User: " + userID);
         this.DB = DB;
@@ -69,6 +69,11 @@ public class UserView extends javax.swing.JFrame {
         User_AddAd_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_AddAd_Button.setText("Add Advertisement");
         User_AddAd_Button.setToolTipText("Add a new advertisement.");
+        User_AddAd_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                User_AddAd_ButtonActionPerformed(evt);
+            }
+        });
 
         User_Tab_Container.setToolTipText("");
         User_Tab_Container.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -269,6 +274,11 @@ public class UserView extends javax.swing.JFrame {
         populateUserAdsTable(userID);
     }//GEN-LAST:event_User_MyAds_TabComponentShown
 
+    private void User_AddAd_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_User_AddAd_ButtonActionPerformed
+        AddAdvertisement addAd = new AddAdvertisement(/*this,*/ DB, userID);
+        addAd.setVisible(true);
+    }//GEN-LAST:event_User_AddAd_ButtonActionPerformed
+    
     private void populateCategories() {
         this.User_Category_ComboBox.removeAllItems();
         this.User_Category_ComboBox.addItem(new Record("All", "All"));
@@ -276,12 +286,12 @@ public class UserView extends javax.swing.JFrame {
             this.User_Category_ComboBox.addItem(category);
         }
     }
-
+    
     public void populateAllAdsTable() {
         Object[][] User_allAds = DB.getAllActiveAds();
         this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
     }
-
+    
     public void populateUserAdsTable(String userID) {
         Object[][] User_myAds = DB.getAllUsersAds(userID);
         this.User_MyAdsResults_Table.setModel(new DefaultTableModel(User_myAds, userAdsColumns));
