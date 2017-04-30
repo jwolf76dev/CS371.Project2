@@ -5,6 +5,12 @@
  */
 package ui;
 
+import db.DBManager;
+import db.Record;
+import java.util.LinkedList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author jwolf
@@ -12,8 +18,14 @@ package ui;
 public class ModeratorView extends javax.swing.JFrame {
 
     /**
-     * Creates new form ModeratorScreen
+     * Creates new form ModeratorView
      */
+    DBManager DB;
+    String userID;
+    String[] unclaimedAdsColumns
+            = new String[]{"Ad ID", "Title", "Description", "Price", "Date", "Username"};
+    String[] moderatorAdsColumn
+            = new String[]{"Ad ID", "Title", "Description", "Price", "Date", "Username", "Status"};
     public ModeratorView() {
         initComponents();
     }

@@ -191,51 +191,81 @@ public class DBManager {
         return result;
     }
 
-//public Object[][] getAdsByStatus(String status) {
-//        String query = "SELECT advertisementID, advertisementDateTime, "
-//                + "advertisementTitle, advertisementDetails, price, Statuses.statusName, "
-//                + "FROM Advertisements "
-//                + "INNER JOIN Statuses ON Statuses.statusID=Advertisements.statusID "
-//                + "WHERE statusID = ?";
-//        return getAdvertisementByStatus(query, status);
-//    }
-//    public Object[][] getAdsByUser(String userID) {
-//        String query = "SELECT advertisementDateTime, advertisementTitle, advertisementDetails, price "
-//                + "FROM Advertisements "
-//                + "INNER JOIN Statuses ON Statuses.statusID = Advertisements.statusID "
-//                + "WHERE userID = ?";
-//        return getAdvertisementByUser(query, userID);
-//    }
-//    public Object[][] getAdsByModerator(String moderatorID) {
-//        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, Statuses.statusName, advertisementDateTime "
-//                + "FROM Advertisements "
-//                + "INNER JOIN "
-//      return getAdvertisementByUser(query, userID);
-//    }
-//
-//    private Object[][] getAdvertisementByUser(String query, String userID) {
-//        PreparedStatement stmt = null;
-//        Object[][] results = null;
-//        try {
-//            stmt = connection.prepareStatement(query);
-//            stmt.setString(1, userID);
-//            ResultSet rs = stmt.executeQuery();
-//            int index = 0;
-//            results = new Object[getResultSetSize(rs)][6];
-//            while (rs.next()) {
-//                results[index][0] = rs.getInt("advertisementID");
-//                results[index][1] = rs.getDate("advertisementDateTime");
-//                results[index][2] = rs.getString("advertisementTitle");
-//                results[index][3] = rs.getString("advertisementDetails");
-//                results[index][4] = rs.getDouble("price");
-//                results[index][5] = rs.getString("statusName");
-//                index++;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return results;
-//    }
+    public Object[][] getAllUnclaimedAds() {
+        PreparedStatement stmt = null;
+        Object[][] results = new Object[][]{};
+
+        String query = "SELECT A.advertisementTitle, A.advertisementDetails, "
+                + "A.price, DATE(A.advertisementDateTime) advertisementDate "
+                + "FROM Advertisements A "
+                + "WHERE statusID = 'AC'";
+
+        try {
+            stmt = connection.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            results = getActiveAds(rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return results;
+        }
+        return results;
+    }
+
+    private Object[][] getUnclaimedAds(ResultSet rs) throws SQLException {
+        int count = getResultSetSize(rs);
+        Object[][] result = new Object[count][4];
+        int index = 0;
+        do {
+            String title = rs.getString("advertisementTitle");
+            String details = rs.getString("advertisementDetails");
+            String price = rs.getString("price");
+            String date = rs.getString("advertisementDate");
+
+            Advertisement advertisement = new Advertisement(title, details, price, date);
+            result[index++] = advertisement.activeAdsToArray();
+        } while (rs.next());
+        return result;
+    }
+
+    public Object[][] getAllModeratorsAds(String userID) {
+        PreparedStatement stmt = null;
+        Object[][] results = new Object[][]{};
+
+        String query = "SELECT A.advertisementID, A.advertisementTitle, A.advertisementDetails, "
+                + "A.price, A.statusID, DATE(A.advertisementDateTime) advertisementDate "
+                + "FROM Advertisements A "
+                + "WHERE userID = ?";
+
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            int count = getResultSetSize(rs);
+            results = getUserAds(count, rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return results;
+        }
+        return results;
+    }
+
+    private Object[][] getModeratorAds(int count, ResultSet rs) throws SQLException {
+        Object[][] result = new Object[count][6];
+        int index = 0;
+        do {
+            String id = rs.getString("advertisementID");
+            String title = rs.getString("advertisementTitle");
+            String details = rs.getString("advertisementDetails");
+            String price = rs.getString("price");
+            String status = rs.getString("statusID");
+            String date = rs.getString("advertisementDate");
+
+            Advertisement advertisement = new Advertisement(id, title, details, price, status, date);
+            result[index++] = advertisement.userAdsToArray();
+        } while (rs.next());
+        return result;
+    }
+
     private int getResultSetSize(ResultSet rs) {
         int count = 0;
         try {

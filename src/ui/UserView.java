@@ -24,7 +24,7 @@ public class UserView extends javax.swing.JFrame {
     String userID;
     String[] allAdsColumns
             = new String[]{"Title", "Description", "Price", "Date"};
-    String[] myAdsColumns
+    String[] userAdsColumns
             = new String[]{"Ad ID", "Title", "Description", "Price", "Status", "Date"};
 
     public UserView(DBManager DB, String userID) {
@@ -75,9 +75,9 @@ public class UserView extends javax.swing.JFrame {
 
         User_AllAds_Tab.setToolTipText("");
         User_AllAds_Tab.setName(""); // NOI18N
-        User_AllAds_Tab.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                User_AllAds_TabMouseClicked(evt);
+        User_AllAds_Tab.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                User_AllAds_TabComponentShown(evt);
             }
         });
 
@@ -88,11 +88,6 @@ public class UserView extends javax.swing.JFrame {
         User_Category_Label.setText("Category");
 
         User_SearchString_Field.setToolTipText("Enter keyword(s) to search for.");
-        User_SearchString_Field.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                User_SearchString_FieldKeyReleased(evt);
-            }
-        });
 
         User_Search_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Search_Button.setText("Search");
@@ -176,9 +171,9 @@ public class UserView extends javax.swing.JFrame {
 
         User_Tab_Container.addTab("All Advertisements", null, User_AllAds_Tab, "View all available advertisements.");
 
-        User_MyAds_Tab.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                User_MyAds_TabMouseClicked(evt);
+        User_MyAds_Tab.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                User_MyAds_TabComponentShown(evt);
             }
         });
 
@@ -266,20 +261,13 @@ public class UserView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void User_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_User_SearchString_FieldKeyReleased
-//        Record category = (Record) this.User_Category_ComboBox.getSelectedItem();
-//        String period = this.User_Category_ComboBox.getSelectedItem().toString();
-//        Object[][] searchResults = DB.searchActiveAds(category.getID(), period, this.User_SearchString_Field.getText());
-//        this.User_AllAdsResults_Table.setModel(new DefaultTableModel(searchResults, allAdsColumns));
-    }//GEN-LAST:event_User_SearchString_FieldKeyReleased
-
-    private void User_AllAds_TabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_User_AllAds_TabMouseClicked
+    private void User_AllAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_User_AllAds_TabComponentShown
         populateAllAdsTable();
-    }//GEN-LAST:event_User_AllAds_TabMouseClicked
+    }//GEN-LAST:event_User_AllAds_TabComponentShown
 
-    private void User_MyAds_TabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_User_MyAds_TabMouseClicked
+    private void User_MyAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_User_MyAds_TabComponentShown
         populateUserAdsTable(userID);
-    }//GEN-LAST:event_User_MyAds_TabMouseClicked
+    }//GEN-LAST:event_User_MyAds_TabComponentShown
 
     private void populateCategories() {
         this.User_Category_ComboBox.removeAllItems();
@@ -293,10 +281,10 @@ public class UserView extends javax.swing.JFrame {
         Object[][] User_allAds = DB.getAllActiveAds();
         this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
     }
-    
+
     public void populateUserAdsTable(String userID) {
         Object[][] User_myAds = DB.getAllUsersAds(userID);
-        this.User_MyAdsResults_Table.setModel(new DefaultTableModel(User_myAds, myAdsColumns));
+        this.User_MyAdsResults_Table.setModel(new DefaultTableModel(User_myAds, userAdsColumns));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

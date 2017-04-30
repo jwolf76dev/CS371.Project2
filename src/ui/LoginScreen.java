@@ -124,11 +124,11 @@ public class LoginScreen extends javax.swing.JFrame {
             boolean result=DB.checkModerator(userID);
             if (!result) {
                 JOptionPane.showMessageDialog(this, "Invalid Moderator ID", "Error", JOptionPane.ERROR_MESSAGE);
-            } //else {
-//                ModeratorView moderatorView = new ModeratorView(DB, userID);
-//                moderatorView.setVisible(true);
-//                this.setVisible(false);
-//            }
+            } else {
+                ModeratorView moderatorView = new ModeratorView(DB, userID);
+                moderatorView.setVisible(true);
+                this.setVisible(false);
+            }
         }
     }//GEN-LAST:event_Login_Login_ButtonActionPerformed
     
