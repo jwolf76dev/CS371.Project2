@@ -17,7 +17,6 @@ public class Main {
         try{
             
             DB.connect("UMKCDatabase","Umkcdatabase","cs-371.cdzwjr1xplmp.us-east-1.rds.amazonaws.com","3306","Cs_371");
-            Object[][] results = DB.searchActiveAds("ALL", "Any Date", "");
             JFrame LoginScreen=new LoginScreen(DB);
             LoginScreen.setVisible(true);
         }

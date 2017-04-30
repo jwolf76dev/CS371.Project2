@@ -119,6 +119,30 @@ public class DBManager {
 //        }
 //        return results;
 //    }
+
+    public Object[] getAdByID(int id){
+        PreparedStatement stmt = null;
+        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, categoryID " +
+                "From Advertisements Where advertisementID = ?";
+        Object[] result = null;
+        try{
+            stmt = connection.prepareStatement(query);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            result = new Object[5];
+            while (rs.next()){
+                result[0] = rs.getInt("advertisementID");
+                result[1] = rs.getString("advertisementTitle");
+                result[2] = rs.getString("advertisementDetails");
+                result[3] = rs.getDouble("price");
+                result[4] = rs.getString("categoryID");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+
+    }
     public Object[][] getAllActiveAds() {
         PreparedStatement stmt = null;
         Object[][] results = new Object[][]{};
@@ -198,7 +222,7 @@ public class DBManager {
         PreparedStatement stmt = null;
 
         String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, "
-                + "advertisementDateTime, price, categoryID, userID, moderatorID, statusID) "
+                + "advertisementDateTime, price, categoryID, userID, statusID) "
                 + "VALUES (?,?,CURRENT_DATE(),?,?,?,?,?)";
 
         try {
@@ -208,8 +232,7 @@ public class DBManager {
             stmt.setString(3, price);
             stmt.setString(4, category);
             stmt.setString(5, userID);
-            stmt.setString(6, "NULL");
-            stmt.setString(7, "PN");
+            stmt.setString(6, "PN");
             stmt.executeUpdate();
             return true;
 
