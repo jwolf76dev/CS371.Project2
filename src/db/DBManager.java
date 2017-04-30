@@ -196,8 +196,9 @@ public class DBManager {
     public boolean addAdvertisement(String title, String details, String price, String category, String userID) {
         PreparedStatement stmt = null;
 
-        String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, advertisementDateTime, price, categoryID, userID, moderatorID, statusID) "
-                + "VALUES (?,?,CURRENT_DATE(),?,?,?,NULL,'PN')";
+        String query = "INSERT INTO Advertisements (advertisementTitle, advertisementDetails, "
+                + "advertisementDateTime, price, categoryID, userID, moderatorID, statusID) "
+                + "VALUES (?,?,CURRENT_DATE(),?,?,?,?,?)";
 
         try {
             stmt = connection.prepareStatement(query);
@@ -206,6 +207,35 @@ public class DBManager {
             stmt.setString(3, price);
             stmt.setString(4, category);
             stmt.setString(5, userID);
+            stmt.setString(6, "NULL");
+            stmt.setString(7, "PN");
+            stmt.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean updateAdvertisement(String ID, String title, String details, String price, String category) {
+        PreparedStatement stmt = null;
+
+        String query = "UPDATE Advertisements "
+                + "SET advertisementTitle= ?, advertisementDetails= ?, price= ?, "
+                + "categoryID= ?, moderatorID= ?, statusID= ?) "
+                + "WHERE advertisementID= ? "
+                + "VALUES (?,?,?,?,?,?,?)";
+
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, title);
+            stmt.setString(2, details);
+            stmt.setString(3, price);
+            stmt.setString(4, category);
+            stmt.setString(5, "NULL");
+            stmt.setString(6, "PN");
+            stmt.setString(7, ID);
             stmt.executeUpdate();
             return true;
 

@@ -189,6 +189,11 @@ public class UserView extends javax.swing.JFrame {
         User_Edit_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Edit_Button.setText("Edit");
         User_Edit_Button.setToolTipText("Edit the currently highlighted row.");
+        User_Edit_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                User_Edit_ButtonActionPerformed(evt);
+            }
+        });
 
         User_MyAdsResults_Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -278,6 +283,12 @@ public class UserView extends javax.swing.JFrame {
         AddAdvertisement addAd = new AddAdvertisement(/*this,*/ DB, userID);
         addAd.setVisible(true);
     }//GEN-LAST:event_User_AddAd_ButtonActionPerformed
+
+    private void User_Edit_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_User_Edit_ButtonActionPerformed
+//        //get the ID of the selected record, or send the record already pulled
+//        UserEditAdvertisement editAd = new UserEditAdvertisement(DB, ID/rs);
+//        editAd.setVisible(true);
+    }//GEN-LAST:event_User_Edit_ButtonActionPerformed
     
     private void populateCategories() {
         this.User_Category_ComboBox.removeAllItems();

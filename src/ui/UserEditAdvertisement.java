@@ -5,6 +5,12 @@
  */
 package ui;
 
+import db.DBManager;
+import db.Record;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jwolf
@@ -14,8 +20,18 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
     /**
      * Creates new form UserEditAdvertisement
      */
-    public UserEditAdvertisement() {
+    DBManager DB;
+    String userID;
+    String adID;
+    
+    public UserEditAdvertisement(DBManager DB, String adID) {
+        setTitle("Edit Advertisement" + adID);
+        this.DB=DB;
+        this.userID=userID;
+        // TODO: populate table fields from DB record provided
         initComponents();
+//        populateTable();
+        populateCategories();
     }
 
     /**
@@ -74,6 +90,11 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         UserEdit_Update_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         UserEdit_Update_Button.setText("Update Advertisement");
         UserEdit_Update_Button.setToolTipText("Save changes to the advertisement.");
+        UserEdit_Update_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UserEdit_Update_ButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -124,43 +145,57 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UserEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UserEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UserEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UserEditAdvertisement.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void UserEdit_Update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserEdit_Update_ButtonActionPerformed
+        String title = this.UserEdit_Title_Field.getText();
+        String details = this.UserEdit_Details_Field.getText();
+        String category = (String)this.UserEdit_Category_ComboBox.getSelectedItem();        
+        String price = this.UserEdit_Price_Field.getText();
+
+        if (title.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        } if (details.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        } if (price.trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        } 
+        boolean result = DB.addAdvertisement(title, details, price, category, userID);
+        if (result) {
+            JOptionPane.showMessageDialog(this,
+                    "The advertisement was updated",
+                    "Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE);
+//            parent.populateUserAdsTable(userID);
         }
-        //</editor-fold>
+    }                                              
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new UserEditAdvertisement().setVisible(true);
-            }
-        });
-    }
+/*    private void populateTable(DBManager result) {
+        String title = ;
+        String details = ;
+        Record category = ;
+        String price = ;
+        
+        this.UserEdit_Title_Field.setText(title);
+        this.UserEdit_Details_Field.setText(details);
+        this.UserEdit_Category_ComboBox. ; /*set the current record's category*/
+//        this.UserEdit_Price_Field.setText(price);
+//    }
 
+    private void populateCategories() {
+        this.UserEdit_Category_ComboBox.removeAllItems();
+        this.UserEdit_Category_ComboBox.addItem(new Record("All", "All"));
+        for (Record category : DB.getCategories()) {
+            this.UserEdit_Category_ComboBox.addItem(category);
+        }
+    }//GEN-LAST:event_UserEdit_Update_ButtonActionPerformed
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> UserEdit_Category_ComboBox;
+    private javax.swing.JComboBox<Record> UserEdit_Category_ComboBox;
     private javax.swing.JLabel UserEdit_Category_Label;
     private javax.swing.JScrollPane UserEdit_Details_Container;
     private javax.swing.JTextArea UserEdit_Details_Field;
