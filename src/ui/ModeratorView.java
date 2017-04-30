@@ -23,11 +23,18 @@ public class ModeratorView extends javax.swing.JFrame {
     DBManager DB;
     String userID;
     String[] unclaimedAdsColumns
-            = new String[]{"Ad ID", "Title", "Description", "Price", "Date", "Username"};
+            = new String[]{"Ad ID", "Title", "Description", "Price", "Category", "User", "Date"};
     String[] moderatorAdsColumn
-            = new String[]{"Ad ID", "Title", "Description", "Price", "Date", "Username", "Status"};
-    public ModeratorView() {
+            = new String[]{"Ad ID", "Title", "Description", "Price", "Category", "User", "Status", "Date"};
+    
+    public ModeratorView(DBManager DB, String userID) {
+        this.setTitle("Moderator: " + userID);
+        this.DB = DB;
+        this.userID = userID;
         initComponents();
+        this.populateCategories();
+        this.populateUnclaimedAdsTable();
+        this.populateModeratorAdsTable(userID);
     }
 
     /**
@@ -64,6 +71,11 @@ public class ModeratorView extends javax.swing.JFrame {
         Moderator_Tab_Container.setName("Moderator_Tab_Container"); // NOI18N
 
         Moderator_UnclaimedAds_Tab.setToolTipText("");
+        Moderator_UnclaimedAds_Tab.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                Moderator_UnclaimedAds_TabComponentShown(evt);
+            }
+        });
 
         Moderator_Category_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_Category_Label.setLabelFor(Moderator_Category_ComboBox);
@@ -99,11 +111,11 @@ public class ModeratorView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Title", "Description", "Price", "Date", "Username"
+                "ID", "Title", "Description", "Price", "Category", "User", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -172,6 +184,12 @@ public class ModeratorView extends javax.swing.JFrame {
         Moderator_Tab_Container.addTab("Unclaimed Advertisements", null, Moderator_UnclaimedAds_Tab, "View advertisements without an assigned moderator.");
         Moderator_UnclaimedAds_Tab.getAccessibleContext().setAccessibleName("");
 
+        Moderator_MyAds_Tab.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                Moderator_MyAds_TabComponentShown(evt);
+            }
+        });
+
         Moderator_Edit_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_Edit_Button.setText("Edit");
         Moderator_Edit_Button.setToolTipText("Edit the currently highlighted advertisement.");
@@ -185,11 +203,11 @@ public class ModeratorView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Title", "Description", "Price", "Status", "Date"
+                "ID", "Title", "Description", "Price", "Category", "User", "Status", "Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -243,7 +261,7 @@ public class ModeratorView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(Moderator_Tab_Container, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                .addComponent(Moderator_Tab_Container, javax.swing.GroupLayout.PREFERRED_SIZE, 332, Short.MAX_VALUE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -252,44 +270,34 @@ public class ModeratorView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ModeratorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ModeratorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ModeratorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ModeratorView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
+    private void Moderator_UnclaimedAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_Moderator_UnclaimedAds_TabComponentShown
+        populateUnclaimedAdsTable();
+    }//GEN-LAST:event_Moderator_UnclaimedAds_TabComponentShown
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ModeratorView().setVisible(true);
-            }
-        });
+    private void Moderator_MyAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_Moderator_MyAds_TabComponentShown
+        populateModeratorAdsTable(userID);
+    }//GEN-LAST:event_Moderator_MyAds_TabComponentShown
+
+    private void populateCategories() {
+        this.Moderator_Category_ComboBox.removeAllItems();
+        this.Moderator_Category_ComboBox.addItem(new Record("All", "All"));
+        for (Record category : DB.getCategories()) {
+            this.Moderator_Category_ComboBox.addItem(category);
+        }
     }
 
+    public void populateUnclaimedAdsTable() {
+        Object[][] Moderator_unclaimedAds = DB.getAllUnclaimedAds();
+        this.Moderator_UnclaimedAdsResults_Table.setModel(new DefaultTableModel(Moderator_unclaimedAds, unclaimedAdsColumns));
+    }
+
+    public void populateModeratorAdsTable(String userID) {
+        Object[][] Moderator_myAds = DB.getAllModeratorsAds(userID);
+        this.Moderator_MyAdsResults_Table.setModel(new DefaultTableModel(Moderator_myAds, moderatorAdsColumn));
+    }    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> Moderator_Category_ComboBox;
+    private javax.swing.JComboBox<Record> Moderator_Category_ComboBox;
     private javax.swing.JLabel Moderator_Category_Label;
     private javax.swing.JButton Moderator_ClaimAd_Button;
     private javax.swing.JButton Moderator_Delete_Button;

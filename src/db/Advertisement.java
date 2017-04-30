@@ -11,13 +11,14 @@ package db;
  */
 public class Advertisement {
     private String ID;
-    private String userID;
-    private String date;
     private String title;
     private String details;
     private String price;
+    private String categoryID;
+    private String userID;
     private String statusID;
     private String moderatorID;
+    private String date;
     
     public Advertisement(String title, String details, String price, String date) {
         this.title=title;
@@ -36,16 +37,28 @@ public class Advertisement {
         this.date=date;
     }
 
-    public Advertisement(String ID, String userID, String date, String title,
-            String details, String price, String statusID, String moderatorID) {
+    public Advertisement(String ID, String title, String details, String price,
+            String categoryID, String userID, String date) {
+        this.ID = ID;
+        this.title = title;
+        this.details = details;
+        this.price = price;
+        this.categoryID = categoryID;
+        this.userID = userID;
+        this.date = date;
+    }
+
+    public Advertisement(String ID, String title, String details,
+            String price, String categoryID, String userID, String statusID,
+            String date) {
         this.ID=ID;
-        this.userID=userID;
-        this.date=date;
         this.title=title;
         this.details=details;
         this.price=price;
+        this.categoryID=categoryID;
+        this.userID=userID;
         this.statusID=statusID;
-        this.moderatorID=moderatorID;
+        this.date=date;
     }
 
     public String getID() {
@@ -119,8 +132,16 @@ public class Advertisement {
     Object[] userAdsToArray() {
         return new Object[]{ID, title, details, price, statusID, date};
     }
-            
+    
+    Object[] unclaimedAdsToArray() {
+        return new Object[]{ID, title, details, price, categoryID, userID, date};
+    }
+    
+    Object[] moderatorAdsToArray() {
+        return new Object[]{ID, title, details, price, categoryID, userID, statusID, date};
+    }
+    
     Object[] allAdsToArray(){
-        return new Object[]{ID, userID, date, title, details, price, statusID, moderatorID};
+        return new Object[]{ID, userID, title, details, price, categoryID, statusID, moderatorID, date};
     }
 }
