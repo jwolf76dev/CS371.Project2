@@ -350,6 +350,21 @@ public boolean moderatorUpdateAdvertisement(String ID, String category, String s
         return result;
     }
 
+    public boolean deleteAdByID(int ID){
+        PreparedStatement stmt = null;
+        String query = "Delete From Advertisements Where advertisementID = ?";
+        try{
+            stmt = connection.prepareStatement(query);
+            stmt.setInt(1, ID);
+            int delete = stmt.executeUpdate();
+            if(delete == 1)
+                return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public Object[][] searchActiveAds(String category, String period, String searchText) {
         PreparedStatement stmt = null;
         ResultSet rs;
