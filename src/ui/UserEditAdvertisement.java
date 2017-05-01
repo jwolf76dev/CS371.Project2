@@ -155,6 +155,19 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         advertisement.setDetails(this.UserEdit_Details_Field.getText().trim());
         Record category = (Record) this.UserEdit_Category_ComboBox.getSelectedItem();
         advertisement.setCategoryID(category.getID());
+        
+        if (advertisement.getTitle().equals("")) {
+            JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (advertisement.getDetails().equals("")) {
+            JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         try {
             if (StringUtils.isNullOrEmpty(this.UserEdit_Price_Field.getText())) {
                 JOptionPane.showMessageDialog(this, "Price field is empty", "Error",
@@ -168,17 +181,7 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        if (advertisement.getTitle().equals("")) {
-            JOptionPane.showMessageDialog(this, "Title field is empty", "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (advertisement.getDetails().equals("")) {
-            JOptionPane.showMessageDialog(this, "Details field is empty", "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        
         boolean result = DB.userUpdateAdvertisement(advertisement);
         if (result) {
             JOptionPane.showMessageDialog(this,

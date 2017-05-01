@@ -7,6 +7,9 @@ package ui;
 
 import db.DBManager;
 import db.Record;
+import db.Advertisement;
+import Utilities.Utilities;
+import com.mysql.jdbc.StringUtils;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,16 +22,21 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
      * Creates new form ModeratorEditAdvertisement
      */
     DBManager DB;
+    int adID;
     String userID;
-    String adID;
+    ModeratorView parent;
+    Advertisement advertisement = null;
+    
 
-    public ModeratorEditAdvertisement(DBManager DB, String adID) {
+    public ModeratorEditAdvertisement(ModeratorView parent, DBManager DB, int adID, String userID) {
         setTitle("Edit Advertisement " + adID);
+        this.parent = parent;
         this.DB = DB;
+        this.adID = adID;
         this.userID = userID;
         initComponents();
         populateCategories();
-//        populateTable();
+        populateTable(adID);
     }
 
     /**
@@ -163,25 +171,53 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ModeratorEdit_Update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModeratorEdit_Update_ButtonActionPerformed
-        String adID = this.adID;
-        String category = (String) this.ModeratorEdit_Category_ComboBox.getSelectedItem();
-        String status = (String)this.ModeratorEdit_Status_ComboBox.getSelectedItem();
-
-        boolean result = DB.moderatorUpdateAdvertisement(adID, category, status);
+        advertisement.setID(this.adID);
+        advertisement.setTitle(this.ModeratorEdit_Title_Field.getText());
+        advertisement.setDetails(this.ModeratorEdit_Details_Field.getText());
+        Record category = (Record) this.ModeratorEdit_Category_ComboBox.getSelectedItem();
+        advertisement.setCategoryID(category.getID());
+        Record status = (Record) this.ModeratorEdit_Status_ComboBox.getSelectedItem();
+        advertisement.setStatusID(status.getID());
+        
+        boolean result = DB.moderatorUpdateAdvertisement(advertisement);
         if (result) {
             JOptionPane.showMessageDialog(this,
                     "The advertisement was updated",
                     "Confirmation",
                     JOptionPane.INFORMATION_MESSAGE);
-//            parent.populateUserAdsTable(userID);
+            parent.populateModeratorAdsTable(userID);
+            this.setVisible(false);
         }
     }//GEN-LAST:event_ModeratorEdit_Update_ButtonActionPerformed
 
+    private void populateTable(int adID) {
+        advertisement = DB.getAdByID(adID);
+        this.ModeratorEdit_Title_Field.setText(advertisement.getTitle());
+        this.ModeratorEdit_Details_Field.setText(advertisement.getDetails());
+        this.ModeratorEdit_Price_Field.setText(String.valueOf(advertisement.getPrice()));
+        try {
+            this.ModeratorEdit_Category_ComboBox.setSelectedItem(Utilities.findCategory(this.ModeratorEdit_Category_ComboBox, advertisement.getCategoryID()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            this.ModeratorEdit_Status_ComboBox.setSelectedItem(Utilities.findCategory(this.ModeratorEdit_Status_ComboBox, advertisement.getCategoryID()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }   
+    }
+    
     private void populateCategories() {
         this.ModeratorEdit_Category_ComboBox.removeAllItems();
-        this.ModeratorEdit_Category_ComboBox.addItem(new Record("All", "All"));
         for (Record category : DB.getCategories()) {
             this.ModeratorEdit_Category_ComboBox.addItem(category);
+        }
+    }
+    
+    private void populateStatuses() {
+        this.ModeratorEdit_Status_ComboBox.removeAllItems();
+        for (Record status : DB.getStatuses()) {
+            this.ModeratorEdit_Status_ComboBox.addItem(status);
         }
     }
 
