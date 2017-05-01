@@ -261,14 +261,13 @@ public class DBManager {
         PreparedStatement stmt = null;
 
         String query = "UPDATE Advertisements "
-                + "SET categoryID= ?, statusID= ?) "
-                + "WHERE advertisementID= ? "
-                + "VALUES (?,?,?)";
+                + "SET categoryID= ?, statusID= ? "
+                + "WHERE advertisementID= ?";
 
         try {
             stmt = connection.prepareStatement(query);
             stmt.setString(1, advertisement.getCategoryID());
-            stmt.setString(2, "PN");
+            stmt.setString(2, advertisement.getStatusID());
             stmt.setInt(3, advertisement.getID());
             stmt.executeUpdate();
             return true;

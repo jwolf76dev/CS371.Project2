@@ -36,6 +36,7 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
         this.userID = userID;
         initComponents();
         populateCategories();
+        populateStatuses();
         populateTable(adID);
     }
 
@@ -201,7 +202,7 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
             e.printStackTrace();
         }
         try {
-            this.ModeratorEdit_Status_ComboBox.setSelectedItem(Utilities.findCategory(this.ModeratorEdit_Status_ComboBox, advertisement.getCategoryID()));
+            this.ModeratorEdit_Status_ComboBox.setSelectedItem(Utilities.findStatus(this.ModeratorEdit_Status_ComboBox, advertisement.getStatusID()));
         } catch (Exception e) {
             e.printStackTrace();
         }   
