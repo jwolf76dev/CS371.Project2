@@ -430,7 +430,7 @@ public class DBManager {
 
             }
             rs = stmt.executeQuery();
-            return getActiveAds(rs);
+            return getUnclaimedAds(rs);
         } catch (Exception e) {
             e.printStackTrace();
             return new Object[][]{};
