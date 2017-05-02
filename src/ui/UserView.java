@@ -54,12 +54,12 @@ public class UserView extends javax.swing.JFrame {
         User_Category_ComboBox = new javax.swing.JComboBox<>();
         User_Category_Label = new javax.swing.JLabel();
         User_SearchString_Field = new javax.swing.JTextField();
-        User_Search_Button = new javax.swing.JButton();
         User_Period_ComboBox = new javax.swing.JComboBox<>();
         User_SearchString_Label = new javax.swing.JLabel();
         User_Period_Label = new javax.swing.JLabel();
         User_AllAdsResults_Container = new javax.swing.JScrollPane();
         User_AllAdsResults_Table = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
         User_MyAds_Tab = new javax.swing.JPanel();
         User_Delete_Button = new javax.swing.JButton();
         User_Edit_Button = new javax.swing.JButton();
@@ -90,6 +90,11 @@ public class UserView extends javax.swing.JFrame {
 
         User_Category_ComboBox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Category_ComboBox.setToolTipText("Select an item category to search.");
+        User_Category_ComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                User_Category_ComboBoxItemStateChanged(evt);
+            }
+        });
 
         User_Category_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_Category_Label.setText("Category");
@@ -101,13 +106,14 @@ public class UserView extends javax.swing.JFrame {
             }
         });
 
-        User_Search_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        User_Search_Button.setText("Search");
-        User_Search_Button.setToolTipText("");
-
         User_Period_ComboBox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        User_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Date", "This Month", "Last Month", "Last 3 Months", "Last 6 Months", "Last Year" }));
+        User_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Date", "This Month", "Last 3 Months", "Last 6 Months", "Last Year" }));
         User_Period_ComboBox.setToolTipText("Select a timeframe to search within.");
+        User_Period_ComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                User_Period_ComboBoxItemStateChanged(evt);
+            }
+        });
 
         User_SearchString_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         User_SearchString_Label.setText("Title, Description");
@@ -134,15 +140,21 @@ public class UserView extends javax.swing.JFrame {
         User_AllAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         User_AllAdsResults_Container.setViewportView(User_AllAdsResults_Table);
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setText("Filter Results By:");
+
         javax.swing.GroupLayout User_AllAds_TabLayout = new javax.swing.GroupLayout(User_AllAds_Tab);
         User_AllAds_Tab.setLayout(User_AllAds_TabLayout);
         User_AllAds_TabLayout.setHorizontalGroup(
             User_AllAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(User_AllAds_TabLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(User_AllAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(User_AllAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(User_AllAdsResults_Container)
                     .addGroup(User_AllAds_TabLayout.createSequentialGroup()
+                        .addGap(0, 11, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
                         .addGroup(User_AllAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(User_AllAds_TabLayout.createSequentialGroup()
                                 .addGroup(User_AllAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -153,13 +165,10 @@ public class UserView extends javax.swing.JFrame {
                                     .addComponent(User_Period_Label)
                                     .addComponent(User_Period_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(User_SearchString_Field, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(User_Search_Button))
+                                .addComponent(User_SearchString_Field, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(User_AllAds_TabLayout.createSequentialGroup()
                                 .addGap(300, 300, 300)
-                                .addComponent(User_SearchString_Label)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(User_SearchString_Label)))))
                 .addContainerGap())
         );
         User_AllAds_TabLayout.setVerticalGroup(
@@ -175,7 +184,7 @@ public class UserView extends javax.swing.JFrame {
                     .addComponent(User_Category_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(User_Period_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(User_SearchString_Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(User_Search_Button))
+                    .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addComponent(User_AllAdsResults_Container, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -238,7 +247,7 @@ public class UserView extends javax.swing.JFrame {
                         .addComponent(User_Edit_Button)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(User_Delete_Button))
-                    .addComponent(User_MyAdsResults_Container, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE))
+                    .addComponent(User_MyAdsResults_Container, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE))
                 .addContainerGap())
         );
         User_MyAds_TabLayout.setVerticalGroup(
@@ -322,11 +331,25 @@ public class UserView extends javax.swing.JFrame {
     }//GEN-LAST:event_User_Delete_ButtonActionPerformed
 
     private void User_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_User_SearchString_FieldKeyReleased
-        String category = this.User_Category_ComboBox.getSelectedItem().toString();
+        Record category = (Record) this.User_Category_ComboBox.getSelectedItem();
         String period = this.User_Period_ComboBox.getSelectedItem().toString();
         String searchText = this.User_SearchString_Field.getText();
-        populateAllAdsTable(category, period, searchText);
+        populateAllAdsTable(category.getID(), period, searchText);
     }//GEN-LAST:event_User_SearchString_FieldKeyReleased
+
+    private void User_Category_ComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_User_Category_ComboBoxItemStateChanged
+        Record category = (Record) this.User_Category_ComboBox.getSelectedItem();
+        String period = this.User_Period_ComboBox.getSelectedItem().toString();
+        String searchText = this.User_SearchString_Field.getText();
+        populateAllAdsTable(category.getID(), period, searchText);
+    }//GEN-LAST:event_User_Category_ComboBoxItemStateChanged
+
+    private void User_Period_ComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_User_Period_ComboBoxItemStateChanged
+        Record category = (Record) this.User_Category_ComboBox.getSelectedItem();
+        String period = this.User_Period_ComboBox.getSelectedItem().toString();
+        String searchText = this.User_SearchString_Field.getText();
+        populateAllAdsTable(category.getID(), period, searchText);
+    }//GEN-LAST:event_User_Period_ComboBoxItemStateChanged
 
     private void populateCategories() {
         this.User_Category_ComboBox.removeAllItems();
@@ -363,7 +386,7 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JLabel User_Period_Label;
     private javax.swing.JTextField User_SearchString_Field;
     private javax.swing.JLabel User_SearchString_Label;
-    private javax.swing.JButton User_Search_Button;
     private javax.swing.JTabbedPane User_Tab_Container;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

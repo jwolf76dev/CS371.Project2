@@ -130,25 +130,6 @@ public class DBManager {
         }
         return result;
     }
-    
-//    public Object[][] getAllActiveAds() {
-//        PreparedStatement stmt = null;
-//        Object[][] results = new Object[][]{};
-//
-//        String query = "SELECT A.advertisementTitle, A.advertisementDetails, "
-//                + "A.price, DATE(A.advertisementDateTime) advertisementDate "
-//                + "FROM Advertisements A "
-//                + "WHERE statusID = 'AC'";
-//
-//        try {
-//            stmt = connection.prepareStatement(query);
-//            ResultSet rs = stmt.executeQuery();
-//            results = getActiveAds(rs);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return results;
-//    }
 
     private Object[][] getActiveAds(ResultSet rs) throws SQLException {
 
@@ -191,8 +172,9 @@ public class DBManager {
 
     private Object[][] getUserAds(int count, ResultSet rs) throws SQLException {
         Object[][] result = new Object[count][6];
+        rs.beforeFirst();
         int index = 0;
-        do {
+        while (rs.next()) {
             int id = rs.getInt("advertisementID");
             String title = rs.getString("advertisementTitle");
             String details = rs.getString("advertisementDetails");
@@ -202,7 +184,7 @@ public class DBManager {
 
             Advertisement advertisement = new Advertisement(id, title, details, price, status, date);
             result[index++] = advertisement.userAdsToArray();
-        } while (rs.next());
+        };
         return result;
     }
 
