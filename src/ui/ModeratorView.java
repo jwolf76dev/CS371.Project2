@@ -24,18 +24,18 @@ public class ModeratorView extends javax.swing.JFrame {
     DBManager DB;
     String userID;
     String[] unclaimedAdsColumns
-            = new String[]{"Ad ID", "Title", "Description", "Price", "Category", "User", "Date"};
+            = new String[]{"Ad ID", "Title", "Description", "Price", "Date", "User"};
     String[] moderatorAdsColumn
             = new String[]{"Ad ID", "Title", "Description", "Price", "Category", "User", "Status", "Date"};
     LinkedList<Advertisement> adList;
-    
+
     public ModeratorView(DBManager DB, String userID) {
         this.setTitle("Moderator: " + userID);
         this.DB = DB;
         this.userID = userID;
         initComponents();
         this.populateCategories();
-        this.populateUnclaimedAdsTable();
+        populateUnclaimedAdsTable("All", "Any Date", "");
         this.populateModeratorAdsTable(userID);
     }
 
@@ -85,20 +85,35 @@ public class ModeratorView extends javax.swing.JFrame {
 
         Moderator_Category_ComboBox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_Category_ComboBox.setToolTipText("Select an item category to search.");
+        Moderator_Category_ComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Moderator_Category_ComboBoxItemStateChanged(evt);
+            }
+        });
 
         Moderator_Period_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_Period_Label.setLabelFor(Moderator_Period_ComboBox);
         Moderator_Period_Label.setText("Period");
 
         Moderator_Period_ComboBox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        Moderator_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "This Month", "Last Month", "Last 3 Months", "Last 6 Months", "Last Year", "Any Date" }));
+        Moderator_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Date", "This Month", "Last 3 Months", "Last 6 Months", "Last 12 Months" }));
         Moderator_Period_ComboBox.setToolTipText("Select a timeframe to search within.");
+        Moderator_Period_ComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Moderator_Period_ComboBoxItemStateChanged(evt);
+            }
+        });
 
         Moderator_SearchString_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_SearchString_Label.setLabelFor(Moderator_SearchString_Field);
         Moderator_SearchString_Label.setText("Title, Description");
 
         Moderator_SearchString_Field.setToolTipText("Enter keyword(s) to search for.");
+        Moderator_SearchString_Field.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                Moderator_SearchString_FieldKeyReleased(evt);
+            }
+        });
 
         Moderator_ClaimAd_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_ClaimAd_Button.setText("Claim Ad");
@@ -282,7 +297,7 @@ public class ModeratorView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void Moderator_UnclaimedAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_Moderator_UnclaimedAds_TabComponentShown
-        populateUnclaimedAdsTable();
+        populateUnclaimedAdsTable("All", "Any Date", "");
     }//GEN-LAST:event_Moderator_UnclaimedAds_TabComponentShown
 
     private void Moderator_MyAds_TabComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_Moderator_MyAds_TabComponentShown
@@ -291,7 +306,7 @@ public class ModeratorView extends javax.swing.JFrame {
 
     private void Moderator_ClaimAd_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Moderator_ClaimAd_ButtonActionPerformed
         int row = Moderator_UnclaimedAdsResults_Table.getSelectedRow();
-        int adID = (Integer) Moderator_UnclaimedAdsResults_Table.getValueAt(row, 0);
+        int adID = Integer.parseInt(Moderator_UnclaimedAdsResults_Table.getValueAt(row, 0).toString());
         int reply = JOptionPane.showConfirmDialog(this, "Confirm claim", "Confirmation",
                 JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
@@ -301,7 +316,10 @@ public class ModeratorView extends javax.swing.JFrame {
                     "Confirmation",
                     JOptionPane.INFORMATION_MESSAGE);
             populateModeratorAdsTable(userID);
-            populateUnclaimedAdsTable();
+            resetSearchFilters();
+            populateUnclaimedAdsTable("All", "Any Date", "");
+
+
             return;
         }
         return;
@@ -332,13 +350,26 @@ public class ModeratorView extends javax.swing.JFrame {
         return;
     }//GEN-LAST:event_Moderator_Delete_ButtonActionPerformed
 
-        private void Moderator_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {                                                    
-        String category = this.Moderator_Category_ComboBox.getSelectedItem().toString();
+    private void Moderator_Category_ComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Moderator_Category_ComboBoxItemStateChanged
+        Record category = (Record) this.Moderator_Category_ComboBox.getSelectedItem();
         String period = this.Moderator_Period_ComboBox.getSelectedItem().toString();
         String searchText = this.Moderator_SearchString_Field.getText();
-        populateModeratorAdsTable(userID);
-    }                                                   
-        
+        populateUnclaimedAdsTable(category.getID(), period, searchText);
+    }//GEN-LAST:event_Moderator_Category_ComboBoxItemStateChanged
+
+    private void Moderator_Period_ComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Moderator_Period_ComboBoxItemStateChanged
+        Record category = (Record) this.Moderator_Category_ComboBox.getSelectedItem();
+        String period = this.Moderator_Period_ComboBox.getSelectedItem().toString();
+        String searchText = this.Moderator_SearchString_Field.getText();
+        populateUnclaimedAdsTable(category.getID(), period, searchText);
+    }//GEN-LAST:event_Moderator_Period_ComboBoxItemStateChanged
+
+    private void Moderator_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_Moderator_SearchString_FieldKeyReleased
+        Record category = (Record) this.Moderator_Category_ComboBox.getSelectedItem();
+        String period = this.Moderator_Period_ComboBox.getSelectedItem().toString();
+        String searchText = this.Moderator_SearchString_Field.getText();
+        populateUnclaimedAdsTable(category.getID(), period, searchText);    }//GEN-LAST:event_Moderator_SearchString_FieldKeyReleased
+
     private void populateCategories() {
         this.Moderator_Category_ComboBox.removeAllItems();
         this.Moderator_Category_ComboBox.addItem(new Record("All", "All"));
@@ -347,17 +378,23 @@ public class ModeratorView extends javax.swing.JFrame {
         }
     }
 
-    public void populateUnclaimedAdsTable() {
+    public void populateUnclaimedAdsTable(String category, String period, String searchText) {
         adList = new LinkedList();
-        //TODO: Update search function for Moderator Search
-        Object[][] Moderator_unclaimedAds = DB.getAllUnclaimedAds();
+        Object[][] Moderator_unclaimedAds = DB.searchUnclaimedModeratorAds(category, period, searchText);
         this.Moderator_UnclaimedAdsResults_Table.setModel(new DefaultTableModel(Moderator_unclaimedAds, unclaimedAdsColumns));
     }
 
     public void populateModeratorAdsTable(String userID) {
         Object[][] Moderator_myAds = DB.getAllModeratorsAds(userID);
         this.Moderator_MyAdsResults_Table.setModel(new DefaultTableModel(Moderator_myAds, moderatorAdsColumn));
-    }    
+    }
+    
+    private void resetSearchFilters() {
+        Moderator_Category_ComboBox.setSelectedIndex(0);
+        Moderator_Period_ComboBox.setSelectedIndex(0);
+        Moderator_SearchString_Field.setText("");
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<Record> Moderator_Category_ComboBox;
