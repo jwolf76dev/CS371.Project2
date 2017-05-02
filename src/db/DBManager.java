@@ -148,6 +148,25 @@ public class DBManager {
 
     }
 
+    private Object[][] getUnclaimedAds(ResultSet rs) throws SQLException {
+
+        int count = getResultSetSize(rs);
+        rs.beforeFirst();
+        Object[][] result = new Object[count][6];
+        int index = 0;
+        while (rs.next()){
+            result[index][0] = rs.getString("advertisementID");
+            result[index][1] = rs.getString("advertisementTitle");
+            result[index][2] = rs.getString("advertisementDetails");
+            result[index][3] = rs.getFloat("price");
+            result[index][4] = rs.getString("advertisementDate");
+            result[index][5] = rs.getString("userID");
+            index++;
+        }
+        return result;
+
+    }
+
     public Object[][] getAllUsersAds(String userID) {
         PreparedStatement stmt = null;
         Object[][] results = new Object[][]{};
@@ -278,26 +297,6 @@ public class DBManager {
         return results;
     }
 
-    private Object[][] getUnclaimedAds(ResultSet rs) throws SQLException {
-        int count = getResultSetSize(rs);
-        Object[][] result = new Object[count][7];
-        int index = 0;
-        do {
-            int id = rs.getInt("advertisementID");
-            String title = rs.getString("advertisementTitle");
-            String details = rs.getString("advertisementDetails");
-            float price = rs.getFloat("price");
-            String category = rs.getString("categoryID");
-            String user = rs.getString("userID");
-            String date = rs.getString("advertisementDate");
-
-            Advertisement advertisement = new Advertisement(id, title, details, price,
-                    category, user, date);
-            result[index++] = advertisement.unclaimedAdsToArray();
-        } while (rs.next());
-        return result;
-    }
-
     public boolean claimAdvertisement(int adID, String moderatorID) {
         PreparedStatement stmt = null;
         
@@ -377,7 +376,68 @@ public class DBManager {
         return false;
     }
 
-    public Object[][] searchActiveAds(String category, String period, String searchText) {
+    public Object[][] searchUnclaimedModeratorAds(String category, String period, String searchText) {
+        PreparedStatement stmt = null;
+        ResultSet rs;
+        int month = Utilities.getMonth(period);
+        boolean hasCategory = !category.equals("All");
+        boolean hasPeriod = month != -1;
+        boolean hasSearchText = !StringUtils.isNullOrEmpty(searchText);
+        String[] searchArray = searchText.split(" ");
+        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, "
+                + "Date(advertisementDateTime) as advertisementDate, userID "
+                + "From Advertisements "
+                + "Where moderatorID IS NULL";
+        try {
+            stmt = connection.prepareStatement(query);
+            if (hasCategory || hasSearchText || hasPeriod) {
+                if (hasCategory) {
+                    query += " And categoryID = ?";
+                }
+
+                if (hasPeriod) {
+                    query += " And advertisementDateTime > curdate() - INTERVAL (DAYOFMONTH(curdate()) -1) DAY - INTERVAL ? MONTH";
+                }
+                if (hasSearchText) {
+                    String passInQuery = query;
+                    query = buildSearchQuery(passInQuery, searchArray);
+                }
+                if (hasCategory) {
+                    stmt = connection.prepareStatement(query);
+                    stmt.setString(1, category);
+                    if (hasPeriod) {
+                        stmt.setInt(2, month);
+                        if (hasSearchText) {
+                            stmt = addSearchQueryValues(stmt, searchArray, 3);
+                        }
+                    }
+                    if (hasSearchText) {
+                        stmt = addSearchQueryValues(stmt, searchArray, 2);
+                    }
+
+                } else if (hasPeriod) {
+                    stmt = connection.prepareStatement(query);
+                    stmt.setInt(1, month);
+
+                    if (hasSearchText) {
+                        stmt = addSearchQueryValues(stmt, searchArray, 2);
+
+                    }
+                } else {
+                    stmt = connection.prepareStatement(query);
+                    stmt = addSearchQueryValues(stmt, searchArray, 1);
+                }
+
+            }
+            rs = stmt.executeQuery();
+            return getActiveAds(rs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Object[][]{};
+        }
+    }
+
+    public Object[][] searchActiveUserAds(String category, String period, String searchText) {
         PreparedStatement stmt = null;
         ResultSet rs;
         int month = Utilities.getMonth(period);

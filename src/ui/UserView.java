@@ -361,7 +361,7 @@ public class UserView extends javax.swing.JFrame {
 
     public void populateAllAdsTable(String category, String period, String searchText) {
         adList = new LinkedList();
-        Object[][] User_allAds = DB.searchActiveAds(category, period, searchText);
+        Object[][] User_allAds = DB.searchActiveUserAds(category, period, searchText);
         this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
     }
 
