@@ -56,10 +56,10 @@ public class ModeratorView extends javax.swing.JFrame {
         Moderator_Period_ComboBox = new javax.swing.JComboBox<>();
         Moderator_SearchString_Label = new javax.swing.JLabel();
         Moderator_SearchString_Field = new javax.swing.JTextField();
-        Moderator_Search_Button = new javax.swing.JButton();
         Moderator_ClaimAd_Button = new javax.swing.JButton();
         Moderator_UnclaimedAdsResults_Container = new javax.swing.JScrollPane();
         Moderator_UnclaimedAdsResults_Table = new javax.swing.JTable();
+        Moderator_FilterResults_Label = new javax.swing.JLabel();
         Moderator_MyAds_Tab = new javax.swing.JPanel();
         Moderator_Edit_Button = new javax.swing.JButton();
         Moderator_Delete_Button = new javax.swing.JButton();
@@ -100,10 +100,6 @@ public class ModeratorView extends javax.swing.JFrame {
 
         Moderator_SearchString_Field.setToolTipText("Enter keyword(s) to search for.");
 
-        Moderator_Search_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        Moderator_Search_Button.setText("Search");
-        Moderator_Search_Button.setToolTipText("");
-
         Moderator_ClaimAd_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_ClaimAd_Button.setText("Claim Ad");
         Moderator_ClaimAd_Button.setToolTipText("Claim the currently highlighted advertisement to moderate.");
@@ -132,6 +128,9 @@ public class ModeratorView extends javax.swing.JFrame {
         Moderator_UnclaimedAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         Moderator_UnclaimedAdsResults_Container.setViewportView(Moderator_UnclaimedAdsResults_Table);
 
+        Moderator_FilterResults_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        Moderator_FilterResults_Label.setText("Filter Results By:");
+
         javax.swing.GroupLayout Moderator_UnclaimedAds_TabLayout = new javax.swing.GroupLayout(Moderator_UnclaimedAds_Tab);
         Moderator_UnclaimedAds_Tab.setLayout(Moderator_UnclaimedAds_TabLayout);
         Moderator_UnclaimedAds_TabLayout.setHorizontalGroup(
@@ -139,36 +138,35 @@ public class ModeratorView extends javax.swing.JFrame {
             .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
                 .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
-                        .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Moderator_Category_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Moderator_Category_Label))
-                                .addGap(18, 18, 18)
-                                .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Moderator_Period_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Moderator_Period_Label))
-                                .addGap(18, 18, 18)
-                                .addComponent(Moderator_SearchString_Field, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(Moderator_Search_Button))
-                            .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
-                                .addGap(324, 324, 324)
-                                .addComponent(Moderator_SearchString_Label)))
-                        .addGap(0, 15, Short.MAX_VALUE))
-                    .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(Moderator_UnclaimedAdsResults_Container))
+                        .addComponent(Moderator_UnclaimedAdsResults_Container, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(Moderator_ClaimAd_Button)))
+                        .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Moderator_ClaimAd_Button, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
+                                .addComponent(Moderator_FilterResults_Label)
+                                .addGap(18, 18, 18)
+                                .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
+                                        .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(Moderator_Category_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Moderator_Category_Label))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(Moderator_Period_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Moderator_Period_Label))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(Moderator_SearchString_Field, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
+                                        .addGap(300, 300, 300)
+                                        .addComponent(Moderator_SearchString_Label)))))))
                 .addContainerGap())
         );
         Moderator_UnclaimedAds_TabLayout.setVerticalGroup(
             Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Moderator_UnclaimedAds_TabLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(4, 4, 4)
                 .addGroup(Moderator_UnclaimedAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Moderator_Category_Label)
                     .addComponent(Moderator_Period_Label)
@@ -178,8 +176,8 @@ public class ModeratorView extends javax.swing.JFrame {
                     .addComponent(Moderator_Category_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Moderator_Period_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Moderator_SearchString_Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Moderator_Search_Button))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(Moderator_FilterResults_Label))
+                .addGap(18, 18, 18)
                 .addComponent(Moderator_ClaimAd_Button)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Moderator_UnclaimedAdsResults_Container, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -367,6 +365,7 @@ public class ModeratorView extends javax.swing.JFrame {
     private javax.swing.JButton Moderator_ClaimAd_Button;
     private javax.swing.JButton Moderator_Delete_Button;
     private javax.swing.JButton Moderator_Edit_Button;
+    private javax.swing.JLabel Moderator_FilterResults_Label;
     private javax.swing.JScrollPane Moderator_MyAdsResults_Container;
     private javax.swing.JTable Moderator_MyAdsResults_Table;
     private javax.swing.JPanel Moderator_MyAds_Tab;
@@ -374,7 +373,6 @@ public class ModeratorView extends javax.swing.JFrame {
     private javax.swing.JLabel Moderator_Period_Label;
     private javax.swing.JTextField Moderator_SearchString_Field;
     private javax.swing.JLabel Moderator_SearchString_Label;
-    private javax.swing.JButton Moderator_Search_Button;
     private javax.swing.JTabbedPane Moderator_Tab_Container;
     private javax.swing.JScrollPane Moderator_UnclaimedAdsResults_Container;
     private javax.swing.JTable Moderator_UnclaimedAdsResults_Table;

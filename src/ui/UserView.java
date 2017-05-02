@@ -59,7 +59,7 @@ public class UserView extends javax.swing.JFrame {
         User_Period_Label = new javax.swing.JLabel();
         User_AllAdsResults_Container = new javax.swing.JScrollPane();
         User_AllAdsResults_Table = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
+        User_FilterResults_Label = new javax.swing.JLabel();
         User_MyAds_Tab = new javax.swing.JPanel();
         User_Delete_Button = new javax.swing.JButton();
         User_Edit_Button = new javax.swing.JButton();
@@ -107,7 +107,7 @@ public class UserView extends javax.swing.JFrame {
         });
 
         User_Period_ComboBox.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        User_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Date", "This Month", "Last 3 Months", "Last 6 Months", "Last Year" }));
+        User_Period_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Any Date", "This Month", "Last 3 Months", "Last 6 Months", "Last 12 Months" }));
         User_Period_ComboBox.setToolTipText("Select a timeframe to search within.");
         User_Period_ComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -140,8 +140,8 @@ public class UserView extends javax.swing.JFrame {
         User_AllAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         User_AllAdsResults_Container.setViewportView(User_AllAdsResults_Table);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Filter Results By:");
+        User_FilterResults_Label.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        User_FilterResults_Label.setText("Filter Results By:");
 
         javax.swing.GroupLayout User_AllAds_TabLayout = new javax.swing.GroupLayout(User_AllAds_Tab);
         User_AllAds_Tab.setLayout(User_AllAds_TabLayout);
@@ -153,7 +153,7 @@ public class UserView extends javax.swing.JFrame {
                     .addComponent(User_AllAdsResults_Container)
                     .addGroup(User_AllAds_TabLayout.createSequentialGroup()
                         .addGap(0, 11, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
+                        .addComponent(User_FilterResults_Label)
                         .addGap(18, 18, 18)
                         .addGroup(User_AllAds_TabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(User_AllAds_TabLayout.createSequentialGroup()
@@ -184,7 +184,7 @@ public class UserView extends javax.swing.JFrame {
                     .addComponent(User_Category_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(User_Period_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(User_SearchString_Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(User_FilterResults_Label))
                 .addGap(18, 18, 18)
                 .addComponent(User_AllAdsResults_Container, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -379,6 +379,7 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JLabel User_Category_Label;
     private javax.swing.JButton User_Delete_Button;
     private javax.swing.JButton User_Edit_Button;
+    private javax.swing.JLabel User_FilterResults_Label;
     private javax.swing.JScrollPane User_MyAdsResults_Container;
     private javax.swing.JTable User_MyAdsResults_Table;
     private javax.swing.JPanel User_MyAds_Tab;
@@ -387,6 +388,5 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JTextField User_SearchString_Field;
     private javax.swing.JLabel User_SearchString_Label;
     private javax.swing.JTabbedPane User_Tab_Container;
-    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

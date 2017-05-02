@@ -100,7 +100,7 @@
                           <Component id="User_AllAdsResults_Container" alignment="1" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="11" max="32767" attributes="0"/>
-                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <Component id="User_FilterResults_Label" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
@@ -141,7 +141,7 @@
                           <Component id="User_Category_ComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="User_Period_ComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="User_SearchString_Field" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="User_FilterResults_Label" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="User_AllAdsResults_Container" min="-2" pref="224" max="-2" attributes="0"/>
@@ -195,7 +195,7 @@
                     <StringItem index="1" value="This Month"/>
                     <StringItem index="2" value="Last 3 Months"/>
                     <StringItem index="3" value="Last 6 Months"/>
-                    <StringItem index="4" value="Last Year"/>
+                    <StringItem index="4" value="Last 12 Months"/>
                   </StringArray>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Select a timeframe to search within."/>
@@ -271,7 +271,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JLabel" name="jLabel1">
+            <Component class="javax.swing.JLabel" name="User_FilterResults_Label">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Tahoma" size="11" style="1"/>
