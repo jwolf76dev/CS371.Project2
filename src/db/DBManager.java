@@ -90,11 +90,28 @@ public class DBManager {
         }
         return categoriesList;
     }
+    
+    public LinkedList<Record> getStatuses() {
+        PreparedStatement stmt = null;
+        LinkedList<Record> statusList = new LinkedList<>();
+        String query = "Select * From Statuses";
+        try {
+            stmt = connection.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                statusList.add(new Record(rs.getString("statusID"), rs.getString("statusName")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusList;
+    }
 
     public Advertisement getAdByID(int id) {
         PreparedStatement stmt = null;
         Advertisement result = new Advertisement();
-        String query = "Select advertisementID, advertisementTitle, advertisementDetails, price, categoryID "
+        String query = "Select advertisementID, advertisementTitle, "
+                + "advertisementDetails, price, categoryID, statusID "
                 + "From Advertisements Where advertisementID = ?";
         try {
             stmt = connection.prepareStatement(query);
@@ -105,22 +122,15 @@ public class DBManager {
                     .setTitle(rs.getString("advertisementTitle"))
                     .setDetails(rs.getString("advertisementDetails"))
                     .setPrice(rs.getFloat("price"))
-                    .setCategoryID(rs.getString("categoryID"));
+                    .setCategoryID(rs.getString("categoryID"))
+                    .setStatusID(rs.getString("statusID"));
 
-//            result = new Object[5];            
-//            while (rs.next()){
-//                result[0] = rs.getInt("advertisementID");
-//                result[1] = rs.getString("advertisementTitle");
-//                result[2] = rs.getString("advertisementDetails");
-//                result[3] = rs.getDouble("price");
-//                result[4] = rs.getString("categoryID");
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
-
     }
+    
 //    public Object[][] getAllActiveAds() {
 //        PreparedStatement stmt = null;
 //        Object[][] results = new Object[][]{};
@@ -244,19 +254,18 @@ public class DBManager {
         }
     }
 
-    public boolean moderatorUpdateAdvertisement(String ID, String category, String status) {
+    public boolean moderatorUpdateAdvertisement(Advertisement advertisement) {
         PreparedStatement stmt = null;
 
         String query = "UPDATE Advertisements "
-                + "SET categoryID= ?, statusID= ?) "
-                + "WHERE advertisementID= ? "
-                + "VALUES (?,?,?)";
+                + "SET categoryID= ?, statusID= ? "
+                + "WHERE advertisementID= ?";
 
         try {
             stmt = connection.prepareStatement(query);
-            stmt.setString(1, category);
-            stmt.setString(2, "PN");
-            stmt.setString(3, ID);
+            stmt.setString(1, advertisement.getCategoryID());
+            stmt.setString(2, advertisement.getStatusID());
+            stmt.setInt(3, advertisement.getID());
             stmt.executeUpdate();
             return true;
 
@@ -306,6 +315,26 @@ public class DBManager {
         return result;
     }
 
+    public boolean claimAdvertisement(int adID, String moderatorID) {
+        PreparedStatement stmt = null;
+        
+        String query = "UPDATE Advertisements "
+                + "SET moderatorID= ? "
+                + "WHERE advertisementID= ?";
+
+        try {
+            stmt = connection.prepareStatement(query);
+            stmt.setString(1, moderatorID);
+            stmt.setInt(2, adID);
+            stmt.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public Object[][] getAllModeratorsAds(String userID) {
         PreparedStatement stmt = null;
         Object[][] results = new Object[][]{};
@@ -321,7 +350,7 @@ public class DBManager {
             stmt.setString(1, userID);
             ResultSet rs = stmt.executeQuery();
             int count = getResultSetSize(rs);
-            results = getUserAds(count, rs);
+            results = getModeratorAds(count, rs);
         } catch (Exception e) {
             e.printStackTrace();
             return results;

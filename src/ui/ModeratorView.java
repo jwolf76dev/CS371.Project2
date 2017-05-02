@@ -7,6 +7,9 @@ package ui;
 
 import db.DBManager;
 import db.Record;
+import db.Advertisement;
+import java.util.LinkedList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -24,6 +27,7 @@ public class ModeratorView extends javax.swing.JFrame {
             = new String[]{"Ad ID", "Title", "Description", "Price", "Category", "User", "Date"};
     String[] moderatorAdsColumn
             = new String[]{"Ad ID", "Title", "Description", "Price", "Category", "User", "Status", "Date"};
+    LinkedList<Advertisement> adList;
     
     public ModeratorView(DBManager DB, String userID) {
         this.setTitle("Moderator: " + userID);
@@ -103,6 +107,11 @@ public class ModeratorView extends javax.swing.JFrame {
         Moderator_ClaimAd_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_ClaimAd_Button.setText("Claim Ad");
         Moderator_ClaimAd_Button.setToolTipText("Claim the currently highlighted advertisement to moderate.");
+        Moderator_ClaimAd_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Moderator_ClaimAd_ButtonActionPerformed(evt);
+            }
+        });
 
         Moderator_UnclaimedAdsResults_Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -120,10 +129,8 @@ public class ModeratorView extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        Moderator_UnclaimedAdsResults_Table.setColumnSelectionAllowed(true);
         Moderator_UnclaimedAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         Moderator_UnclaimedAdsResults_Container.setViewportView(Moderator_UnclaimedAdsResults_Table);
-        Moderator_UnclaimedAdsResults_Table.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout Moderator_UnclaimedAds_TabLayout = new javax.swing.GroupLayout(Moderator_UnclaimedAds_Tab);
         Moderator_UnclaimedAds_Tab.setLayout(Moderator_UnclaimedAds_TabLayout);
@@ -191,10 +198,20 @@ public class ModeratorView extends javax.swing.JFrame {
         Moderator_Edit_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_Edit_Button.setText("Edit");
         Moderator_Edit_Button.setToolTipText("Edit the currently highlighted advertisement.");
+        Moderator_Edit_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Moderator_Edit_ButtonActionPerformed(evt);
+            }
+        });
 
         Moderator_Delete_Button.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         Moderator_Delete_Button.setText("Delete");
         Moderator_Delete_Button.setToolTipText("Delete the currently highlighted advertisement.");
+        Moderator_Delete_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Moderator_Delete_ButtonActionPerformed(evt);
+            }
+        });
 
         Moderator_MyAdsResults_Table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -212,10 +229,8 @@ public class ModeratorView extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        Moderator_MyAdsResults_Table.setColumnSelectionAllowed(true);
         Moderator_MyAdsResults_Table.getTableHeader().setReorderingAllowed(false);
         Moderator_MyAdsResults_Container.setViewportView(Moderator_MyAdsResults_Table);
-        Moderator_MyAdsResults_Table.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         javax.swing.GroupLayout Moderator_MyAds_TabLayout = new javax.swing.GroupLayout(Moderator_MyAds_Tab);
         Moderator_MyAds_Tab.setLayout(Moderator_MyAds_TabLayout);
@@ -276,6 +291,56 @@ public class ModeratorView extends javax.swing.JFrame {
         populateModeratorAdsTable(userID);
     }//GEN-LAST:event_Moderator_MyAds_TabComponentShown
 
+    private void Moderator_ClaimAd_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Moderator_ClaimAd_ButtonActionPerformed
+        int row = Moderator_UnclaimedAdsResults_Table.getSelectedRow();
+        int adID = (Integer) Moderator_UnclaimedAdsResults_Table.getValueAt(row, 0);
+        int reply = JOptionPane.showConfirmDialog(this, "Confirm claim", "Confirmation",
+                JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            if (DB.claimAdvertisement(adID, userID));
+            JOptionPane.showMessageDialog(this,
+                    "The advertisement has been claimed",
+                    "Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE);
+            populateModeratorAdsTable(userID);
+            populateUnclaimedAdsTable();
+            return;
+        }
+        return;
+
+    }//GEN-LAST:event_Moderator_ClaimAd_ButtonActionPerformed
+
+    private void Moderator_Edit_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Moderator_Edit_ButtonActionPerformed
+        int row = Moderator_MyAdsResults_Table.getSelectedRow();
+        int adID = (Integer) Moderator_MyAdsResults_Table.getValueAt(row, 0);
+        ModeratorEditAdvertisement editAd = new ModeratorEditAdvertisement(this, DB, adID, userID);
+        editAd.setVisible(true);
+    }//GEN-LAST:event_Moderator_Edit_ButtonActionPerformed
+
+    private void Moderator_Delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Moderator_Delete_ButtonActionPerformed
+        int row = Moderator_MyAdsResults_Table.getSelectedRow();
+        int adID = (Integer) Moderator_MyAdsResults_Table.getValueAt(row, 0);
+        int reply = JOptionPane.showConfirmDialog(this, "Confirm deletion", "Confirmation",
+                JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+            if (DB.deleteAdByID(adID));
+            JOptionPane.showMessageDialog(this,
+                    "The advertisement was deleted",
+                    "Confirmation",
+                    JOptionPane.INFORMATION_MESSAGE);
+            populateModeratorAdsTable(userID);
+            return;
+        }
+        return;
+    }//GEN-LAST:event_Moderator_Delete_ButtonActionPerformed
+
+        private void Moderator_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {                                                    
+        String category = this.Moderator_Category_ComboBox.getSelectedItem().toString();
+        String period = this.Moderator_Period_ComboBox.getSelectedItem().toString();
+        String searchText = this.Moderator_SearchString_Field.getText();
+        populateModeratorAdsTable(userID);
+    }                                                   
+        
     private void populateCategories() {
         this.Moderator_Category_ComboBox.removeAllItems();
         this.Moderator_Category_ComboBox.addItem(new Record("All", "All"));
@@ -285,6 +350,8 @@ public class ModeratorView extends javax.swing.JFrame {
     }
 
     public void populateUnclaimedAdsTable() {
+        adList = new LinkedList();
+        //TODO: Update search function for Moderator Search
         Object[][] Moderator_unclaimedAds = DB.getAllUnclaimedAds();
         this.Moderator_UnclaimedAdsResults_Table.setModel(new DefaultTableModel(Moderator_unclaimedAds, unclaimedAdsColumns));
     }

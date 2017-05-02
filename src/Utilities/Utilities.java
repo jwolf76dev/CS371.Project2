@@ -46,4 +46,14 @@ public class Utilities {
         }
         throw new Exception("Category not found");
     }
+    
+    public static Record findStatus(JComboBox<Record> status, String statusID) throws Exception {
+        for (int x = 0; x < status.getItemCount(); x++) {
+            Record category = (Record) status.getItemAt(x);
+            if (category.getID().equals(statusID)) {
+                return category;
+            }
+        }
+        throw new Exception("Status not found");
+    }
 }
