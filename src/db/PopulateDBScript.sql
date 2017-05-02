@@ -113,6 +113,11 @@ VALUES ('2010 Sedan Subaru','2010 sedan car in great chape for sale','2017-02-10
   (SELECT categoryID FROM Categories WHERE categoryID = 'PET'),
   (SELECT userID FROM Users WHERE userID = 'lsimmons'),
   (SELECT userID FROM Moderators WHERE userID = NULL),
-  (SELECT statusID FROM Statuses WHERE statusName = 'Pending'));
+  (SELECT statusID FROM Statuses WHERE statusName = 'Pending')),
+('Once you go black...','BBC, slightly used, dishwasher safe','2015-07-25','50',
+  (SELECT categoryID FROM Categories WHERE categoryID = 'MA'),
+  (SELECT userID FROM Users WHERE userID = 'lsimmons'),
+  (SELECT userID FROM Moderators WHERE userID = 'ajackson'),
+  (SELECT statusID FROM Statuses WHERE statusName = 'Active'));
 
 /* end data population */

@@ -27,7 +27,7 @@ public class Utilities {
                 month = 6;
                 break;
 
-            case "Last Year":
+            case "Last 12 Months":
                 month = 12;
                 break;
             default:
