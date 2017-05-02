@@ -151,8 +151,9 @@ public class DBManager {
 //    }
 
     private Object[][] getActiveAds(ResultSet rs) throws SQLException {
-        ResultSetMetaData resultSetMetaData = rs.getMetaData();
-        int count = resultSetMetaData.getColumnCount() - 1;
+
+        int count = getResultSetSize(rs);
+        rs.beforeFirst();
         Object[][] result = new Object[count][4];
         int index = 0;
         while (rs.next()){
