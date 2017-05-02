@@ -141,19 +141,16 @@ public class DBManager {
 //    }
 
     private Object[][] getActiveAds(ResultSet rs) throws SQLException {
-        int count = getResultSetSize(rs);
+        ResultSetMetaData resultSetMetaData = rs.getMetaData();
+        int count = resultSetMetaData.getColumnCount() - 1;
         Object[][] result = new Object[count][4];
         int index = 0;
-        if (getResultSetSize(rs) > 0) {
-            do {
-                String title = rs.getString("advertisementTitle");
-                String details = rs.getString("advertisementDetails");
-                float price = rs.getFloat("price");
-                String date = rs.getString("advertisementDate");
-
-                Advertisement advertisement = new Advertisement(title, details, price, date);
-                result[index++] = advertisement.activeAdsToArray();
-            } while (rs.next());
+        while (rs.next()){
+                result[index][0] = rs.getString("advertisementTitle");
+                result[index][1] = rs.getString("advertisementDetails");
+                result[index][2] = rs.getFloat("price");
+                result[index][3] = rs.getString("advertisementDate");
+                index++;
         }
         return result;
 
@@ -461,6 +458,7 @@ public class DBManager {
         } catch (SQLException e) {
 
         }
+
         return count;
     }
 }
