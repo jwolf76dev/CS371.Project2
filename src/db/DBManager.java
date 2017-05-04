@@ -375,30 +375,6 @@ public class DBManager {
         }
     }
 
-//    /**
-//     *
-//     * @return Object containing ads with no moderator assigned to it
-//     */
-//    public Object[][] getAllUnclaimedAds() {
-//        PreparedStatement stmt = null;
-//        Object[][] results = new Object[][]{};
-//
-//        String query = "SELECT A.advertisementID, A.advertisementTitle, A.advertisementDetails, "
-//                + "A.price, A.categoryID, A.userID, DATE(A.advertisementDateTime) advertisementDate "
-//                + "FROM Advertisements A "
-//                + "WHERE moderatorID IS NULL";
-//
-//        try {
-//            stmt = connection.prepareStatement(query);
-//            ResultSet rs = stmt.executeQuery();
-//            results = getUnclaimedAds(rs);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return results;
-//        }
-//        return results;
-//    }
-
     /**
      * Claim advertisement boolean.
      *

@@ -8,7 +8,7 @@ import db.*;
 import javax.swing.JFrame;
 /**
  *
- * @author jwolf
+ * @author luke
  */
 public class Main {
 
