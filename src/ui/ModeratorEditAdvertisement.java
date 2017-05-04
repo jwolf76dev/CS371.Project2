@@ -13,6 +13,7 @@ import com.mysql.jdbc.StringUtils;
 import javax.swing.JOptionPane;
 
 /**
+ * The type Moderator edit advertisement.
  *
  * @author jwolf
  */
@@ -26,8 +27,15 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
     String userID;
     ModeratorView parent;
     Advertisement advertisement = null;
-    
 
+    /**
+     * Instantiates a new Moderator edit advertisement.
+     *
+     * @param parent the parent view
+     * @param DB     the db
+     * @param adID   the ad id
+     * @param userID the user id
+     */
     public ModeratorEditAdvertisement(ModeratorView parent, DBManager DB, int adID, String userID) {
         setTitle("Edit Advertisement " + adID);
         this.parent = parent;
@@ -191,6 +199,11 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ModeratorEdit_Update_ButtonActionPerformed
 
+    /**
+     * Populate Moderator edit view with selected record.
+     *
+     * @param adID the ad id
+     */
     private void populateTable(int adID) {
         advertisement = DB.getAdByID(adID);
         this.ModeratorEdit_Title_Field.setText(advertisement.getTitle());
@@ -207,14 +220,20 @@ public class ModeratorEditAdvertisement extends javax.swing.JFrame {
             e.printStackTrace();
         }   
     }
-    
+
+    /**
+     * Populate categories combo box.
+     */
     private void populateCategories() {
         this.ModeratorEdit_Category_ComboBox.removeAllItems();
         for (Record category : DB.getCategories()) {
             this.ModeratorEdit_Category_ComboBox.addItem(category);
         }
     }
-    
+
+    /**
+     * Populate statuses combo box.
+     */
     private void populateStatuses() {
         this.ModeratorEdit_Status_ComboBox.removeAllItems();
         for (Record status : DB.getStatuses()) {

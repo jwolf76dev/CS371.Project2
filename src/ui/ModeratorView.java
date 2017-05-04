@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * The type Moderator view.
  *
  * @author jwolf
  */
@@ -29,6 +30,12 @@ public class ModeratorView extends javax.swing.JFrame {
             = new String[]{"Ad ID", "Title", "Description", "Price", "Category", "User", "Status", "Date"};
     LinkedList<Advertisement> adList;
 
+    /**
+     * Instantiates a new Moderator view.
+     *
+     * @param DB     the db
+     * @param userID the user id
+     */
     public ModeratorView(DBManager DB, String userID) {
         this.setTitle("Moderator: " + userID);
         this.DB = DB;
@@ -318,12 +325,9 @@ public class ModeratorView extends javax.swing.JFrame {
             populateModeratorAdsTable(userID);
             resetSearchFilters();
             populateUnclaimedAdsTable("All", "Any Date", "");
-
-
             return;
         }
         return;
-
     }//GEN-LAST:event_Moderator_ClaimAd_ButtonActionPerformed
 
     private void Moderator_Edit_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Moderator_Edit_ButtonActionPerformed
@@ -378,23 +382,37 @@ public class ModeratorView extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Populate unclaimed ads table.
+     *
+     * @param category   the category
+     * @param period     the date period
+     * @param searchText the search text
+     */
     public void populateUnclaimedAdsTable(String category, String period, String searchText) {
         adList = new LinkedList();
         Object[][] Moderator_unclaimedAds = DB.searchUnclaimedModeratorAds(category, period, searchText);
         this.Moderator_UnclaimedAdsResults_Table.setModel(new DefaultTableModel(Moderator_unclaimedAds, unclaimedAdsColumns));
     }
 
+    /**
+     * Populate moderator ads table.
+     *
+     * @param userID the user id
+     */
     public void populateModeratorAdsTable(String userID) {
         Object[][] Moderator_myAds = DB.getAllModeratorsAds(userID);
         this.Moderator_MyAdsResults_Table.setModel(new DefaultTableModel(Moderator_myAds, moderatorAdsColumn));
     }
-    
+
+    /**
+     * Set search filters to default values.
+     */
     private void resetSearchFilters() {
         Moderator_Category_ComboBox.setSelectedIndex(0);
         Moderator_Period_ComboBox.setSelectedIndex(0);
         Moderator_SearchString_Field.setText("");
     }
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<Record> Moderator_Category_ComboBox;

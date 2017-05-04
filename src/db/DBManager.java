@@ -13,15 +13,31 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 /**
+ * The type Db manager. Manages all interactions between the ui and database.
  *
- * @author jwolf, lsimmons
+ * @author lsimmons
+ * @author jwolf
  */
 public class DBManager {
 
+    /**
+     * The database connection.
+     */
     Connection connection;
 
-    public void connect(String userName, String password, String serverName,
-            String portNumber, String dbName)
+    /**
+     * Connect to the database.
+     *
+     * @param userName   the database user name
+     * @param password   the database password
+     * @param serverName the database server name
+     * @param portNumber the database port number
+     * @param dbName     the database name
+     * @throws SQLException           the sql exception
+     * @throws InstantiationException the instantiation exception
+     * @throws IllegalAccessException the illegal access exception
+     */
+    public void connect(String userName, String password, String serverName, String portNumber, String dbName)
             throws SQLException, InstantiationException, IllegalAccessException {
         System.out.println("Loading driver...");
 
@@ -39,8 +55,8 @@ public class DBManager {
 
         conn = DriverManager.getConnection(
                 "jdbc:mysql://"
-                + serverName
-                + ":" + portNumber + "/" + dbName,
+                        + serverName
+                        + ":" + portNumber + "/" + dbName,
                 connectionProps);
 
         System.out.println("Connected to database");
@@ -48,31 +64,41 @@ public class DBManager {
     }
 
     /**
+     * Builds the check user query.
      *
-     * @param employeeID
+     * @param userID    the user id
      * @return User from the database
      */
-    public boolean checkUser(String employeeID) {
+    public boolean checkUser(String userID) {
         String query = "select * FROM Users WHERE userID=?";
-        return checkEmployee(query, employeeID);
+        return checkUser(query, userID);
     }
 
     /**
+     * Builds the check moderator query.
      *
-     * @param employeeID
+     * @param userID    the user id
      * @return Moderator from the Database
      */
-    public boolean checkModerator(String employeeID) {
+    public boolean checkModerator(String userID) {
         String query = "select * FROM Moderators WHERE userID=?";
-        return checkEmployee(query, employeeID);
+        return checkUser(query, userID);
     }
 
-    private boolean checkEmployee(String query, String employeeID) {
+    /**
+     * Validates the user.
+     *
+     * @param check employee query
+     * @param userID
+     * @return boolean  true: the user is valid. false: the user does not exist
+     */
+    @Override
+    private boolean checkUser(String query, String userID) {
         PreparedStatement stmt = null;
 
         try {
             stmt = connection.prepareStatement(query);
-            stmt.setString(1, employeeID); //binding the parameter with the given string
+            stmt.setString(1, userID); //binding the parameter with the given string
             ResultSet rs = stmt.executeQuery();
             int count = getResultSetSize(rs);
             if (count == 1) {
@@ -86,9 +112,9 @@ public class DBManager {
     }
 
     /**
+     * Gets categories.
      *
-     * @return All given categories that an advertisement
-     * can be. This will be used to populate the dropdown table.
+     * @return all given categories that an advertisement can be. This will be used to populate the dropdown table.
      */
     public LinkedList<Record> getCategories() {
         PreparedStatement stmt = null;
@@ -106,10 +132,10 @@ public class DBManager {
         return categoriesList;
     }
 
-
     /**
+     * Gets statuses.
      *
-     * @return all given statuses that an advertisement can be
+     * @return all given statuses that an advertisement can be.
      */
     public LinkedList<Record> getStatuses() {
         PreparedStatement stmt = null;
@@ -128,10 +154,10 @@ public class DBManager {
     }
 
     /**
+     * Gets ad by id.
      *
-     * @param id - db id of an advertisement
-     * @return Advertisement from db with that
-     * given id
+     * @param id    db id of an advertisement
+     * @return Advertisement from db with that given id
      */
     public Advertisement getAdByID(int id) {
         PreparedStatement stmt = null;
@@ -158,9 +184,10 @@ public class DBManager {
     }
 
     /**
+     * Gets active ads Object[][].
      *
-     * @param rs - Result Set containing Active ad information
-     * @return 2D Object used to populate the all ads user table.
+     * @param rs    Result set containing Active ad information.
+     * @return 2D Object used to populate the User all ads table.
      * @throws SQLException
      */
     private Object[][] getActiveAds(ResultSet rs) throws SQLException {
@@ -169,20 +196,22 @@ public class DBManager {
         rs.beforeFirst();
         Object[][] result = new Object[count][4];
         int index = 0;
-        while (rs.next()){
-                result[index][0] = rs.getString("advertisementTitle");
-                result[index][1] = rs.getString("advertisementDetails");
-                result[index][2] = rs.getFloat("price");
-                result[index][3] = rs.getString("advertisementDate");
-                index++;
+        while (rs.next()) {
+            result[index][0] = rs.getString("advertisementTitle");
+            result[index][1] = rs.getString("advertisementDetails");
+            result[index][2] = rs.getFloat("price");
+            result[index][3] = rs.getString("advertisementDate");
+            index++;
         }
         return result;
 
     }
+
     /**
+     * Gets unclaimed ads Object[][].
      *
-     * @param rs - Result Set containing unclaimed ad information
-     * @return 2D Object used to populate the moderator ad table.
+     * @param rs    Result set containing Active ad information.
+     * @return 2D Object used to populate the Moderator ads table.
      * @throws SQLException
      */
     private Object[][] getUnclaimedAds(ResultSet rs) throws SQLException {
@@ -191,7 +220,7 @@ public class DBManager {
         rs.beforeFirst();
         Object[][] result = new Object[count][6];
         int index = 0;
-        while (rs.next()){
+        while (rs.next()) {
             result[index][0] = rs.getString("advertisementID");
             result[index][1] = rs.getString("advertisementTitle");
             result[index][2] = rs.getString("advertisementDetails");
@@ -205,8 +234,9 @@ public class DBManager {
     }
 
     /**
+     * Get all Users ads Object[][].
      *
-     * @param userID - id of the user, used to find ads that belong to the user
+     * @param userID    id of the user, used to find ads that belong to the user
      * @return 2D Object used to populate
      */
     public Object[][] getAllUsersAds(String userID) {
@@ -232,9 +262,10 @@ public class DBManager {
     }
 
     /**
+     * Gets user ads Object[][].
      *
-     * @param count - size of the result set
-     * @param rs - Result Set containing user ad information
+     * @param count size of the Result set
+     * @param rs    Result set containing user ad information
      * @return 2D Object containning parsed ad information
      * @throws SQLException
      */
@@ -257,9 +288,10 @@ public class DBManager {
     }
 
     /**
+     * Add advertisement boolean.
      *
-     * @param advertisement - object containing ad information
-     * @return - boolean true: ad successfully created. false: ad was not added
+     * @param advertisement object containing ad information
+     * @return boolean      true: ad successfully created. false: ad was not added
      */
     public boolean addAdvertisement(Advertisement advertisement) {
         PreparedStatement stmt = null;
@@ -286,9 +318,10 @@ public class DBManager {
     }
 
     /**
+     * User update advertisement boolean.
      *
-     * @param advertisement - object containing ad information to be added to the database
-     * @return - boolean true: ad successfully updated. false: ad was not updated
+     * @param advertisement object containing ad information to be added to the database
+     * @return boolean      true: ad successfully updated. false: ad was not updated
      */
     public boolean userUpdateAdvertisement(Advertisement advertisement) {
         PreparedStatement stmt = null;
@@ -314,10 +347,12 @@ public class DBManager {
             return false;
         }
     }
+
     /**
+     * Moderator update advertisement boolean.
      *
-     * @param advertisement - object containing ad information to be updated
-     * @return - boolean true: ad successfully updated. false: ad was not updated
+     * @param advertisement object containing ad information to be updated
+     * @return boolean      true: ad successfully updated. false: ad was not updated
      */
     public boolean moderatorUpdateAdvertisement(Advertisement advertisement) {
         PreparedStatement stmt = null;
@@ -365,14 +400,15 @@ public class DBManager {
 //    }
 
     /**
+     * Claim advertisement boolean.
      *
-     * @param adID - ad to be claimed by the moderator
-     * @param moderatorID - moderator to claim to add
-     * @return - true: ad has been successfully claimed. false: ad has not been claimed
+     * @param adID        ad to be claimed by the moderator
+     * @param moderatorID moderator to claim to add
+     * @return boolean    true: ad has been successfully claimed. false: ad has not been claimed
      */
     public boolean claimAdvertisement(int adID, String moderatorID) {
         PreparedStatement stmt = null;
-        
+
         String query = "UPDATE Advertisements "
                 + "SET moderatorID= ? "
                 + "WHERE advertisementID= ?";
@@ -391,9 +427,10 @@ public class DBManager {
     }
 
     /**
+     * Get all Moderators ads Object [][].
      *
-     * @param userID - moderator id of the ads
-     * @return -  2D object containing ads owned by the given moderator
+     * @param userID    moderator id of the ads
+     * @return 2D object containing ads owned by the given moderator
      */
     public Object[][] getAllModeratorsAds(String userID) {
         PreparedStatement stmt = null;
@@ -419,10 +456,11 @@ public class DBManager {
     }
 
     /**
+     * Get Moderator ads Object[][].
      *
-     * @param count - number of rows in the result set
-     * @param rs -  result set containing ad information
-     * @return - 2D object containing ads
+     * @param count number of rows in the Result set
+     * @param rs    Result set containing ad information
+     * @return 2D object containing ads
      * @throws SQLException
      */
     private Object[][] getModeratorAds(int count, ResultSet rs) throws SQLException {
@@ -446,9 +484,10 @@ public class DBManager {
     }
 
     /**
+     * Delete ad by id boolean.
      *
-     * @param ID - id of ad to be deleted
-     * @return - True: ad was successfully deleted. false: ad was not deleted.
+     * @param ID        id of ad to be deleted
+     * @return boolean  true: ad was successfully deleted. false: ad was not deleted.
      */
     public boolean deleteAdByID(int ID) {
         PreparedStatement stmt = null;
@@ -467,11 +506,12 @@ public class DBManager {
     }
 
     /**
+     * Search unclaimed moderator ads Object[][].
      *
-     * @param category - category of ad to be searched
-     * @param period - time period of ad to be searched
-     * @param searchText -  string to search ads by
-     * @return - ads based on the search parameters
+     * @param category      category of ad to be searched
+     * @param period        time period of ad to be searched
+     * @param searchText    string to search ads by
+     * @return ads based on the search parameters
      */
     public Object[][] searchUnclaimedModeratorAds(String category, String period, String searchText) {
         PreparedStatement stmt = null;
@@ -487,8 +527,9 @@ public class DBManager {
                 + "Where moderatorID IS NULL";
         try {
             stmt = connection.prepareStatement(query);
-            //there is no good way to have a variable number of prepared statements
-            //We first check to see if specific values have been entered to search by.
+
+            // There is no good way to have a variable number of prepared statements.
+            // We first check to see if specific values have been entered to search by.
             if (hasCategory || hasSearchText || hasPeriod) {
                 if (hasCategory) {
                     query += " And categoryID = ?";
@@ -501,8 +542,8 @@ public class DBManager {
                     String passInQuery = query;
                     query = buildSearchQuery(passInQuery, searchArray);
                 }
-                // at this point the query has been built now it is time to enter the sanitized values
-                //This is slightly redundant but necessary to check all possibilities.
+                // At this point the query has been built now it is time to enter the sanitized values.
+                // This is slightly redundant but necessary to check all possibilities.
                 if (hasCategory) {
                     stmt = connection.prepareStatement(query);
                     stmt.setString(1, category);
@@ -537,11 +578,13 @@ public class DBManager {
             return new Object[][]{};
         }
     }
+
     /**
+     * Search active user ads Object[][].
      *
-     * @param category - category of ad to be searched
-     * @param period - time period of ad to be searched
-     * @param searchText -  string to search ads by
+     * @param category      category of ad to be searched
+     * @param period        time period of ad to be searched
+     * @param searchText    string to search ads by
      * @return ads based on the search parameters
      */
     public Object[][] searchActiveUserAds(String category, String period, String searchText) {
@@ -558,8 +601,9 @@ public class DBManager {
                 + "Where statusID = 'AC'";
         try {
             stmt = connection.prepareStatement(query);
-            //there is no good way to have a variable number of prepared statements
-            //We first check to see if specific values have been entered to search by.
+
+            // There is no good way to have a variable number of prepared statements.
+            // We first check to see if specific values have been entered to search by.
             if (hasCategory || hasSearchText || hasPeriod) {
                 if (hasCategory) {
                     query += " And categoryID = ?";
@@ -568,21 +612,26 @@ public class DBManager {
                 if (hasPeriod) {
                     query += " And advertisementDateTime > curdate() - INTERVAL (DAYOFMONTH(curdate()) -1) DAY - INTERVAL ? MONTH";
                 }
+
                 if (hasSearchText) {
                     String passInQuery = query;
                     query = buildSearchQuery(passInQuery, searchArray);
                 }
-                // at this point the query has been built now it is time to enter the sanitized values
-                //This is slightly redundant but necessary to check all possibilities.
+
+                // At this point the query has been built now it is time to enter the sanitized values.
+                // This is slightly redundant but necessary to check all possibilities.
                 if (hasCategory) {
                     stmt = connection.prepareStatement(query);
                     stmt.setString(1, category);
+
                     if (hasPeriod) {
                         stmt.setInt(2, month);
+
                         if (hasSearchText) {
                             stmt = addSearchQueryValues(stmt, searchArray, 3);
                         }
                     }
+
                     if (hasSearchText) {
                         stmt = addSearchQueryValues(stmt, searchArray, 2);
                     }
@@ -593,13 +642,12 @@ public class DBManager {
 
                     if (hasSearchText) {
                         stmt = addSearchQueryValues(stmt, searchArray, 2);
-
                     }
+
                 } else {
                     stmt = connection.prepareStatement(query);
                     stmt = addSearchQueryValues(stmt, searchArray, 1);
                 }
-
             }
             rs = stmt.executeQuery();
             return getActiveAds(rs);
@@ -609,6 +657,13 @@ public class DBManager {
         }
     }
 
+    /**
+     * Build db search query.
+     *
+     * @param query
+     * @param searchArray
+     * @return query
+     */
     private String buildSearchQuery(String query, String[] searchArray) {
         for (String text : searchArray) {
             query += " And (advertisementTitle LIKE ? OR advertisementDetails Like ?)";
@@ -616,6 +671,14 @@ public class DBManager {
         return query;
     }
 
+    /**
+     * Builds search query from variable data.
+     *
+     * @param stmt          the query template
+     * @param searchArray   the array of variables; will be added to the query template
+     * @param startIndex    the starting index of the searchArray
+     * @return stmt         the query to be sent to the db
+     */
     private PreparedStatement addSearchQueryValues(PreparedStatement stmt, String[] searchArray, int startIndex) {
         int index = startIndex;
         try {
@@ -631,6 +694,12 @@ public class DBManager {
         return stmt;
     }
 
+    /**
+     * Gets the size of the Result set returned from a query.
+     *
+     * @param rs        Result set of a db query
+     * @return count    the number of results returned from the query
+     */
     private int getResultSetSize(ResultSet rs) {
         int count = 0;
         try {
@@ -641,7 +710,6 @@ public class DBManager {
         } catch (SQLException e) {
 
         }
-
         return count;
     }
 }

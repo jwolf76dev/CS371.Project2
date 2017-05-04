@@ -9,6 +9,7 @@ import db.DBManager;
 import javax.swing.JOptionPane;
 
 /**
+ * The type Login screen.
  *
  * @author jwolf
  */
@@ -19,6 +20,11 @@ public class LoginScreen extends javax.swing.JFrame {
      */
     DBManager DB;
 
+    /**
+     * Instantiates a new Login screen.
+     *
+     * @param DB the db
+     */
     public LoginScreen(DBManager DB) {
         this.setTitle("Login");
         this.DB=DB;

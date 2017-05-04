@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * The type User view.
  *
  * @author jwolf
  */
@@ -29,6 +30,12 @@ public class UserView extends javax.swing.JFrame {
             = new String[]{"Ad ID", "Title", "Description", "Price", "Status", "Date"};
     LinkedList<Advertisement> adList;
 
+    /**
+     * Instantiates a new User view.
+     *
+     * @param DB     the db
+     * @param userID the user id
+     */
     public UserView(DBManager DB, String userID) {
         this.setTitle("User: " + userID);
         this.DB = DB;
@@ -327,7 +334,6 @@ public class UserView extends javax.swing.JFrame {
             return;
         }
         return;
-
     }//GEN-LAST:event_User_Delete_ButtonActionPerformed
 
     private void User_SearchString_FieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_User_SearchString_FieldKeyReleased
@@ -351,6 +357,9 @@ public class UserView extends javax.swing.JFrame {
         populateAllAdsTable(category.getID(), period, searchText);
     }//GEN-LAST:event_User_Period_ComboBoxItemStateChanged
 
+    /**
+     * Populate categories combo box.
+     */
     private void populateCategories() {
         this.User_Category_ComboBox.removeAllItems();
         this.User_Category_ComboBox.addItem(new Record("All", "All"));
@@ -359,12 +368,24 @@ public class UserView extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Populate all ads table.
+     *
+     * @param category   the category
+     * @param period     the date period
+     * @param searchText the search text
+     */
     public void populateAllAdsTable(String category, String period, String searchText) {
         adList = new LinkedList();
         Object[][] User_allAds = DB.searchActiveUserAds(category, period, searchText);
         this.User_AllAdsResults_Table.setModel(new DefaultTableModel(User_allAds, allAdsColumns));
     }
 
+    /**
+     * Populate user ads table.
+     *
+     * @param userID the user id
+     */
     public void populateUserAdsTable(String userID) {
         Object[][] User_myAds = DB.getAllUsersAds(userID);
         this.User_MyAdsResults_Table.setModel(new DefaultTableModel(User_myAds, userAdsColumns));

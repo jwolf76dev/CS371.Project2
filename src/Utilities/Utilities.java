@@ -6,10 +6,19 @@ import java.util.LinkedList;
 import javax.swing.JComboBox;
 
 /**
- * Created by luke_ on 4/29/2017.
+ * @author luke on 4/29/2017.
+ *
+ * Utility functions to assist in processing data sent to queries
  */
 public class Utilities {
 
+    /**
+     * Returns the numeric equivalent of a string for calculating
+     * different date ranges.
+     *
+     * @param text  string with period of time
+     * @return int  numeric equivalence of period of time in months
+     */
     public static int getMonth(String text) {
         int month;
         switch (text) {
@@ -37,7 +46,14 @@ public class Utilities {
         return month;
     }
 
-    public static Record findCategory(JComboBox<Record> categories, String categoryID) throws Exception {
+    /**
+     * Returns a category record
+     * @param categories
+     * @param categoryID
+     * @return
+     * @throws Exception
+     */
+/*    public static Record findCategory(JComboBox<Record> categories, String categoryID) throws Exception {
         for (int x = 0; x < categories.getItemCount(); x++) {
             Record category = (Record) categories.getItemAt(x);
             if (category.getID().equals(categoryID)) {
@@ -55,5 +71,5 @@ public class Utilities {
             }
         }
         throw new Exception("Status not found");
-    }
+    }*/
 }

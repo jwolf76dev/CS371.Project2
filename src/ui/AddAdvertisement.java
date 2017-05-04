@@ -12,6 +12,7 @@ import db.Record;
 import javax.swing.JOptionPane;
 
 /**
+ * The type Add advertisement.
  *
  * @author jwolf
  */
@@ -24,7 +25,14 @@ public class AddAdvertisement extends javax.swing.JFrame {
     String userID;
     UserView parent;
     Advertisement advertisement;
-    
+
+    /**
+     * Instantiates a new Add advertisement.
+     *
+     * @param parent the parent
+     * @param DB     the db
+     * @param userID the user id
+     */
     public AddAdvertisement(UserView parent, DBManager DB, String userID) {
         setTitle("Add Advertisement");
         this.parent = parent;
@@ -150,6 +158,9 @@ public class AddAdvertisement extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Add advertisement button action. Validates all fields.
+     */
     private void Add_Add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_Add_ButtonActionPerformed
 
         if (StringUtils.isNullOrEmpty(this.Add_Title_Field.getText().trim())) {
@@ -203,6 +214,9 @@ public class AddAdvertisement extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_Add_Add_ButtonActionPerformed
 
+    /**
+     * Populate categories combo box.
+     */
     private void populateCategories() {
         this.Add_Category_ComboBox.removeAllItems();
         this.Add_Category_ComboBox.addItem(new Record("Choose", "<Choose a category>"));

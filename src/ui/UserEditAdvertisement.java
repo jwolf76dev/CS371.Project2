@@ -13,6 +13,7 @@ import com.mysql.jdbc.StringUtils;
 import javax.swing.JOptionPane;
 
 /**
+ * The type User edit advertisement.
  *
  * @author jwolf
  */
@@ -27,6 +28,14 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
     UserView parent;
     Advertisement advertisement = null;
 
+    /**
+     * Instantiates a new User edit advertisement.
+     *
+     * @param parent the parent view
+     * @param DB     the db
+     * @param adID   the ad id
+     * @param userID the user id
+     */
     public UserEditAdvertisement(UserView parent, DBManager DB, int adID, String userID) {
         setTitle("Edit Ad: " + adID);
         this.parent = parent;
@@ -149,6 +158,9 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Update button action. Validates all editable fields.
+     */
     private void UserEdit_Update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserEdit_Update_ButtonActionPerformed
         advertisement.setID(this.adID);
         advertisement.setTitle(this.UserEdit_Title_Field.getText().trim());
@@ -193,6 +205,11 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Populate User edit view with selected record.
+     *
+     * @param adID the ad id
+     */
     private void populateTable(int adID) {
         advertisement = DB.getAdByID(adID);
         this.UserEdit_Title_Field.setText(advertisement.getTitle());
@@ -205,6 +222,9 @@ public class UserEditAdvertisement extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Populate categories combo box.
+     */
     private void populateCategories() {
         this.UserEdit_Category_ComboBox.removeAllItems();
         for (Record category : DB.getCategories()) {
