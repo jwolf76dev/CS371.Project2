@@ -47,13 +47,14 @@ public class Utilities {
     }
 
     /**
-     * Returns a category record
-     * @param categories
-     * @param categoryID
-     * @return
-     * @throws Exception
+     * Validates db record category with available categories.
+     *
+     * @param categories    the available category Records
+     * @param categoryID    the db record category id
+     * @return category     the db Record category
+     * @throws Exception    db record category not found in available categories
      */
-/*    public static Record findCategory(JComboBox<Record> categories, String categoryID) throws Exception {
+    public static Record findCategory(JComboBox<Record> categories, String categoryID) throws Exception {
         for (int x = 0; x < categories.getItemCount(); x++) {
             Record category = (Record) categories.getItemAt(x);
             if (category.getID().equals(categoryID)) {
@@ -62,7 +63,15 @@ public class Utilities {
         }
         throw new Exception("Category not found");
     }
-    
+
+    /**
+     * Validates db record status with available statuses.
+     *
+     * @param status        the available status Records
+     * @param statusID      the db record status id
+     * @return category     the db Record status
+     * @throws Exception    db record status not found in available statuses
+     */
     public static Record findStatus(JComboBox<Record> status, String statusID) throws Exception {
         for (int x = 0; x < status.getItemCount(); x++) {
             Record category = (Record) status.getItemAt(x);
@@ -71,5 +80,5 @@ public class Utilities {
             }
         }
         throw new Exception("Status not found");
-    }*/
+    }
 }

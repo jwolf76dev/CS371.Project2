@@ -92,7 +92,7 @@ public class DBManager {
      * @param userID
      * @return boolean  true: the user is valid. false: the user does not exist
      */
-    @Override
+    
     private boolean checkUser(String query, String userID) {
         PreparedStatement stmt = null;
 
@@ -266,7 +266,7 @@ public class DBManager {
      *
      * @param count size of the Result set
      * @param rs    Result set containing user ad information
-     * @return 2D Object containning parsed ad information
+     * @return 2D Object containing parsed ad information
      * @throws SQLException
      */
     private Object[][] getUserAds(int count, ResultSet rs) throws SQLException {
